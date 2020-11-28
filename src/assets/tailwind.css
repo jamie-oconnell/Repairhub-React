@@ -1,0 +1,64 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+@layer utilities {
+  .textstyle-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1rem;
+    letter-spacing: 0px;
+  }
+  .textstyle-tableheader {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .textstyle-chip {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    letter-spacing: 0px;
+    fontfamily: '"IBM Plex Mono", monospace';
+  }
+  .textstyle-mono {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    letter-spacing: -0.4px;
+  }
+  .textstyle-body {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    letter-spacing: 0px;
+  }
+  .textstyle-emphasisedmono {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: -0.4px;
+  }
+  .textstyle-emphasisedbody {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: 0px;
+  }
+  .textstyle-header {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.5rem;
+    letter-spacing: 0px;
+  }
+  .textstyle-widget {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 2rem;
+    letter-spacing: 0px;
+  }
+}
