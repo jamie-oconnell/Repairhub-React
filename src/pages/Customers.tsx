@@ -1,18 +1,14 @@
 import React from "react";
 import PageHeader from "../components/layout/PageHeader";
 import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
+import TextInput from "../components/ui/TextInput";
 import CustomersTable from "../components/tables/Customers";
+import useRouter from "../hooks/router";
 
 interface Props {}
 
-type Customer = {
-  col1: string;
-  col2: string;
-  col3: string;
-};
-
 const Customers = (props: Props) => {
+  const router = useRouter();
   const data = React.useMemo(
     () => [
       {
@@ -549,23 +545,32 @@ const Customers = (props: Props) => {
       <PageHeader>
         <span className="textstyle-header flex-1">Customers</span>
         <Button type="secondary">Import Customers</Button>
-        <Button type="primary" className="ml-2">
+        <Button
+          onClick={(e) => router.push("/customers/create")}
+          type="primary"
+          className="ml-2"
+        >
           Create Customer
         </Button>
       </PageHeader>
       <PageHeader>
-        <Input
+        <TextInput
           className="w-searchBar"
           icon="search"
           placeholder="Search customer"
-        ></Input>
+        ></TextInput>
         <Button className="ml-2" type="secondary">
           Filters
         </Button>
       </PageHeader>
       <div className="w-full px-8 py-8 flex justify-center">
         <div className="container">
-          <CustomersTable columns={columns} data={data} />
+          <CustomersTable
+            fetchData={() => console.log("fetch data")}
+            pageCount={10}
+            columns={columns}
+            data={data}
+          />
         </div>
       </div>
     </>

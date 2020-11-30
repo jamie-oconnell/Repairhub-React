@@ -15,14 +15,14 @@ const Menu = ({ items, hideLabels }: Props) => {
     <div>
       {items.map((section) => {
         return (
-          <div className="my-5">
+          <div className="my-4">
             {section.map((item) => {
               return (
                 <ul className="flex flex-col w-full">
-                  <li className="px-4">
+                  <li className="px-4 py-1 h-12 flex items-center">
                     <Link
                       to={item.link}
-                      className={`flex flex-row items-center h-12 px-2 text-gray-600 bg-gray-100 hover:bg-gray-90 ${
+                      className={`flex items-center h-full w-full px-2 text-gray-600 hover:bg-gray-90 ${
                         currentPath === item.link && "bg-gray-90 text-gray-5"
                       }`}
                     >
