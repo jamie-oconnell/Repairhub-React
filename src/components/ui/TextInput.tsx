@@ -5,9 +5,20 @@ interface Props {
   icon?: string;
   className?: string;
   id?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
 }
 
-const TextInput = ({ placeholder, icon, id, className }: Props) => {
+const TextInput = ({
+  placeholder,
+  icon,
+  id,
+  value,
+  onChange,
+  type,
+  className,
+}: Props) => {
   return (
     <div
       className={`relative flex flex-wrap items-stretch focus:text-oceanBlue ${
@@ -19,7 +30,9 @@ const TextInput = ({ placeholder, icon, id, className }: Props) => {
       </span>
       <input
         id={id}
-        type="text"
+        value={value}
+        onChange={onChange}
+        type={type ? type : "text"}
         placeholder={placeholder}
         className={`px-4 py-2.5 placeholder-gray-60 border border-gray-20 text-gray-100 relative bg-white outline-none focus:outline-none focus:border-oceanBlue w-full textstyle-body placeholder-opacity-100 caret-oceanBlue ${
           icon && "pl-10"

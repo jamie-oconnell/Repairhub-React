@@ -1,12 +1,14 @@
+import LayoutWithSidebar from "../components/layout/LayoutWithSidebar"
+
 interface Props {
     
 }
 
 const Error = (props: Props) => {
     return (
-        <div>
+        <LayoutWithSidebar>
             ERROR PAGE
-        </div>
+        </LayoutWithSidebar>
     )
 }
 

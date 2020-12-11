@@ -13,12 +13,12 @@ const Menu = ({ items, hideLabels }: Props) => {
 
   return (
     <div>
-      {items.map((section) => {
+      {items.map((section, index) => {
         return (
-          <div className="my-4">
-            {section.map((item) => {
+          <div className="my-4" key={index}>
+            {section.map((item, index) => {
               return (
-                <ul className="flex flex-col w-full">
+                <ul className="flex flex-col w-full" key={index}>
                   <li className="px-4 py-1 h-12 flex items-center">
                     <Link
                       to={item.link}

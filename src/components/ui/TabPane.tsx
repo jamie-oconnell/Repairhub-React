@@ -1,11 +1,11 @@
 import React from 'react'
 
 type Props = {
-  title: string
+  active: boolean;
 }
 
-const TabPane: React.FC<Props> = ({ children }) => {
-  return <div>{children}</div>
+const TabPane: React.FC<Props> = ({ children, active }) => {
+  return <div className={`${!active && 'hidden'}`}>{children}</div>
 }
 
 export default TabPane

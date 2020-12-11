@@ -1,22 +1,15 @@
-import React, { ReactElement, useState } from "react"
-import Tab from "./Tab"
+import React, { ReactNode, useState } from "react"
 
 type Props = {
-  children: ReactElement[]
+  children: ReactNode
 }
 
-const Tabs: React.FC<Props> = ({ children }) => {
+const Tabs: React.FC<Props> = ({ children}) => {
 
   return (
     <div>
-      <ul>
-        {children.map((item, index) => (
-          <Tab
-            key={index}
-            title={item.props.title}
-            index={index}
-          />
-        ))}
+      <ul className="flex">
+        {children}
       </ul>
     </div>
   )

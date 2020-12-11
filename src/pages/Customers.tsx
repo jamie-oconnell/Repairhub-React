@@ -4,6 +4,8 @@ import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 import CustomersTable from "../components/tables/Customers";
 import useRouter from "../hooks/router";
+import LayoutWithSidebar from "../components/layout/LayoutWithSidebar"
+
 
 interface Props {}
 
@@ -541,13 +543,13 @@ const Customers = (props: Props) => {
     []
   );
   return (
-    <>
+    <LayoutWithSidebar>
       <PageHeader>
         <span className="textstyle-header flex-1">Customers</span>
-        <Button type="secondary">Import Customers</Button>
+        <Button variant="secondary">Import Customers</Button>
         <Button
           onClick={(e) => router.push("/customers/create")}
-          type="primary"
+          variant="primary"
           className="ml-2"
         >
           Create Customer
@@ -559,7 +561,7 @@ const Customers = (props: Props) => {
           icon="search"
           placeholder="Search customer"
         ></TextInput>
-        <Button className="ml-2" type="secondary">
+        <Button className="ml-2" variant="secondary">
           Filters
         </Button>
       </PageHeader>
@@ -573,7 +575,7 @@ const Customers = (props: Props) => {
           />
         </div>
       </div>
-    </>
+    </LayoutWithSidebar>
   );
 };
 
