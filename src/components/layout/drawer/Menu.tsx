@@ -22,7 +22,7 @@ const Menu = ({ items, hideLabels }: Props) => {
                   <li className="px-4 py-1 h-12 flex items-center">
                     <Link
                       to={item.link}
-                      className={`flex items-center h-full w-full px-2 text-gray-600 hover:bg-gray-90 ${
+                      className={`flex items-center h-full w-full transition px-2 text-gray-600 hover:bg-gray-90 ${
                         currentPath === item.link && "bg-gray-90 text-gray-5"
                       }`}
                     >

@@ -6,7 +6,6 @@ import {
   useSortBy,
   useRowSelect,
 } from "react-table";
-import Checkbox from "../ui/Checkbox";
 import {
   Table as TableUI,
   Body as TableBodyUI,
@@ -15,6 +14,8 @@ import {
   Cell as TableCellUI,
   Row as TableRowUI,
 } from "../ui/table/";
+import Button from "../ui/Button"
+import Icon from "../ui/Icon"
 
 interface TableProps {
   columns: Column<object>[];
@@ -63,23 +64,14 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     useSortBy,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
-        // Let's make a column for selection
+        // Let's make a column for options
+        ...columns,
         {
-          id: "_selector",
-          disableResizing: true,
-          disableGroupBy: true,
-          minWidth: 45,
-          width: 45,
-          maxWidth: 45,
+          id: "_options",
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
-          Cell: ({ row }) => (
-            <div>
-              <Checkbox {...row.getToggleRowSelectedProps()} />
-            </div>
-          ),
+          Cell: ({ row }) => <Button variant="icon-text"><Icon icon="more"/></Button>,
         },
-        ...columns,
       ]);
     },
     usePagination,

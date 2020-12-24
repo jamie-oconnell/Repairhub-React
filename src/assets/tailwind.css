@@ -5,6 +5,12 @@
 @tailwind utilities;
 
 @layer utilities {
+  .fill-screen-height {
+    min-height: calc(100vh - 72px);
+  }
+  .fill-screen-height-dual {
+    min-height: calc(100vh - 144px);
+  }
   .textstyle-label {
     font-size: 0.6875rem;
     font-weight: 600;

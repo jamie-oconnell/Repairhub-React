@@ -15,10 +15,11 @@ import {
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { setContext } from "@apollo/client/link/context";
 import jwtDecode from "jwt-decode";
+import "focus-visible";
 
 const httpLink = createHttpLink({
   uri: "http://3.21.8.151:2201/graphql",
-  credentials: "include",
+  //credentials: "include",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -55,9 +56,9 @@ const tokenRefreshLink = new TokenRefreshLink({
     }
   },
   fetchAccessToken: () => {
-    return fetch("http://localhost:4000/refresh_token", {
+    return fetch("http://3.21.8.151:2201/refresh_token", {
       method: "POST",
-      credentials: "include",
+      //credentials: "include",
     });
   },
   handleFetch: (accessToken) => {

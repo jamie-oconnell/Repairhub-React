@@ -1,3 +1,4 @@
+import React from "react"
 interface Props {
   id?: string;
   indeterminate?: boolean;
@@ -21,3 +22,22 @@ const Checkbox = (props: Props) => {
 };
 
 export default Checkbox;
+
+
+
+// const Checkbox = React.forwardRef<HTMLInputElement, Props>(
+//   ({ indeterminate, ...rest }, ref) => {
+//     const defaultRef = React.useRef()
+//     const resolvedRef = ref || defaultRef
+
+//     React.useEffect(() => {
+//       resolvedRef.current.indeterminate = indeterminate
+//     }, [resolvedRef, indeterminate])
+
+//     return (
+//       <>
+//         <input type="checkbox" ref={resolvedRef} {...rest} />
+//       </>
+//     )
+//   }
+// )

@@ -26,7 +26,7 @@ const CreateCustomer = (props: Props) => {
           </Button>
         </div>
       </PageHeader>
-      <div className="bg-white flex w-full justify-center">
+      <div className="bg-white flex w-full justify-center fill-screen-height">
         <div className="container flex justify-center">
           <div style={{ maxWidth: "732px" }}>
             <div className="grid grid-cols-2 py-8">
