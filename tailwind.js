@@ -901,7 +901,7 @@ module.exports = {
     placeSelf: ["responsive"],
     placeholderColor: ["responsive", "dark", "focus"],
     placeholderOpacity: ["responsive", "focus"],
-    pointerEvents: ["responsive"],
+    pointerEvents: ["responsive", "disabled"],
     position: ["responsive"],
     resize: ["responsive"],
     ringColor: ["responsive", "dark", "focus-within", "focus", "focus-visible"],
@@ -930,6 +930,7 @@ module.exports = {
       "focus-within",
       "hover",
       "focus",
+      "disabled",
     ],
     textDecoration: [
       "responsive",

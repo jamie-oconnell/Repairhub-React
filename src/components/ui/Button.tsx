@@ -1,11 +1,12 @@
 import React, { ReactNode } from "react";
 
 interface Props {
-  variant: "primary" | "secondary" | "text" | "icon-text" | "icon-outline";
+  variant: "primary" | "secondary" | "text" | "icon-text" | "icon-outline" | "icon-secondary";
   type?: "submit" | "button" | "reset";
   children: ReactNode;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLElement>;
+  disabled? : boolean
 }
 
 const Button = ({
@@ -14,6 +15,7 @@ const Button = ({
   className,
   type,
   onClick,
+  disabled,
   ...other
 }: Props) => {
   let classname = "";
@@ -26,6 +28,11 @@ const Button = ({
   if (variant === "secondary") {
     classname =
       "bg-gray-5 border border-gray-10 text-gray-100 py-2.5 px-4 textstyle-emphasisedbody hover:bg-oceanBlue6 hover:border-oceanBlue hover:text-oceanBlue active:bg-oceanBlue10 focus:outline-none focus-visible:ring-4 focus-visible:border-focus transition";
+  }
+
+  if (variant === "icon-secondary") {
+    classname =
+      "bg-gray-5 border border-gray-10 text-gray-100 p-2 hover:bg-oceanBlue6 hover:border-oceanBlue hover:text-oceanBlue active:bg-oceanBlue10 focus:outline-none focus-visible:ring-4 focus-visible:border-focus transition disabled:text-gray-30 disabled:pointer-events-none";
   }
 
   if (variant === "text") {
@@ -44,6 +51,7 @@ const Button = ({
       className={className ? classname + " " + className : classname}
       type={type}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

@@ -1,4 +1,4 @@
-import React from 'react'
+import LayoutWithSidebar from "../components/layout/LayoutWithSidebar"
 
 interface Props {
     
@@ -6,9 +6,9 @@ interface Props {
 
 const Dashboard = (props: Props) => {
     return (
-        <div>
-            DASHBOARD
-        </div>
+        <LayoutWithSidebar>
+            Dashboard
+        </LayoutWithSidebar>
     )
 }
 

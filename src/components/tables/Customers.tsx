@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  usePagination,
-  useTable,
-  Column,
-  useSortBy,
-  useRowSelect,
-} from "react-table";
+import { useTable, Column, useSortBy, useRowSelect } from "react-table";
 import {
   Table as TableUI,
   Body as TableBodyUI,
@@ -14,8 +8,10 @@ import {
   Cell as TableCellUI,
   Row as TableRowUI,
 } from "../ui/table/";
-import Button from "../ui/Button"
-import Icon from "../ui/Icon"
+import Button from "../ui/Button";
+import Icon from "../ui/Icon";
+//@ts-ignore
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
 interface TableProps {
   columns: Column<object>[];
@@ -27,39 +23,22 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
-  const {
-    columns,
-    data,
-    fetchData,
-    loading,
-    pagination,
-    pageCount: controlledPageCount,
-  } = props;
+  const { columns, data, fetchData, loading } = props;
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    setPageSize,
-    nextPage,
-    previousPage,
+    rows,
     selectedFlatRows,
-    state: { pageIndex, pageSize, sortBy, selectedRowIds },
+    state: { selectedRowIds },
   } = useTable(
     {
       columns,
       data: data || [],
       manualSortBy: true,
-      autoResetPage: false,
       autoResetSortBy: false,
-      initialState: { pageIndex: 0 },
-      manualPagination: true,
-      pageCount: controlledPageCount,
     },
     useSortBy,
     (hooks) => {
@@ -70,17 +49,30 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
           id: "_options",
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
-          Cell: ({ row }) => <Button variant="icon-text"><Icon icon="more"/></Button>,
+          Cell: () => {
+            return (
+              <Menu
+                menuButton={
+                  <MenuButton>
+                    <Icon icon="more" />
+                  </MenuButton>
+                }
+              >
+                <MenuItem>New Ticket</MenuItem>
+                <MenuItem>New Device</MenuItem>
+                <MenuItem>Delete</MenuItem>
+              </Menu>
+            );
+          },
         },
       ]);
     },
-    usePagination,
     useRowSelect
   );
 
-  useEffect(() => {
-    fetchData({ pageIndex, pageSize, sortBy });
-  }, [sortBy, fetchData, pageIndex, pageSize]);
+  // useEffect(() => {
+  //   fetchData({ pageIndex, pageSize, sortBy });
+  // }, [sortBy, fetchData, pageIndex, pageSize]);
 
   return (
     <>
@@ -110,24 +102,27 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
           ))}
         </TableHeadUI>
         <TableBodyUI {...getTableBodyProps()}>
-          {page.map((row) => {
+          {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <TableRowUI {...row.getRowProps()} key={String(row.id)}>
+              <TableRowUI {...row.getRowProps()} isSelected={row.isSelected}>
                 {row.cells.map((cell) => {
                   return (
                     <TableCellUI
                       {...cell.getCellProps()}
                       key={String(cell.column?.id)}
                     >
-                      <span>{cell.render("Cell")}</span>
+                      <span className="flex items-center">
+                        {cell.render("Cell")}
+                      </span>
                     </TableCellUI>
                   );
                 })}
               </TableRowUI>
             );
           })}
-          <TableRowUI>
+
+          {/* <TableRowUI>
             {loading ? (
               // Use our custom loading state to show a loading indicator
               <TableCellUI>Loading...</TableCellUI>
@@ -137,7 +132,7 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
                 results
               </TableCellUI>
             )}
-          </TableRowUI>
+          </TableRowUI> */}
         </TableBodyUI>
       </TableUI>
       <pre>
@@ -155,17 +150,6 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
         </code>
       </pre>
     </>
-    // {pagination && (
-    //   <div className="pagination">
-    //     <button onClick={() => previousPage()}>
-    //       LEFT
-    //     </button>
-
-    //     <button onClick={() => nextPage()}>
-    //       RIGHT
-    //     </button>
-    //   </div>
-    // )}
   );
 };
 

@@ -7,11 +7,14 @@ import useRouter from "../hooks/router";
 import LayoutWithSidebar from "../components/layout/LayoutWithSidebar";
 import Checkbox from "../components/ui/Checkbox";
 import { Link } from "react-router-dom";
+import { useCustomersQuery } from "../generated/graphql";
+import Pagination from "../components/ui/Pagination";
 
 interface Props {}
 
 const Customers = (props: Props) => {
   const router = useRouter();
+  const customers = useCustomersQuery();
   const data = React.useMemo(
     () => [
       {
@@ -125,10 +128,10 @@ const Customers = (props: Props) => {
         accessor: "name", // accessor is the "key" in the data
         Cell: ({ row, cell }: any) => (
           <>
-            <span>
-              <Checkbox {...row.getToggleRowSelectedProps()} />
-            </span>
-            <Link to="/customers/view" className="ml-4">{cell.value}</Link>
+            <Checkbox {...row.getToggleRowSelectedProps()} />
+            <Link to={`/customers/view/${row.original.id}`} className="ml-4">
+              {cell.value}
+            </Link>
           </>
         ),
       },
@@ -165,14 +168,23 @@ const Customers = (props: Props) => {
         </Button>
       </PageHeader>
       <PageHeader>
-        <TextInput
-          className="w-searchBar"
-          icon="search"
-          placeholder="Search customer"
-        ></TextInput>
-        <Button className="ml-2" variant="secondary">
-          Filters
-        </Button>
+        <div className="flex-1 flex">
+          <TextInput
+            className="w-searchBar"
+            icon="search"
+            placeholder="Search customer"
+          ></TextInput>
+          <Button className="ml-2" variant="secondary">
+            Filters
+          </Button>
+        </div>
+        <Pagination
+          firstValue={1}
+          lastValue={20}
+          total={1240}
+          canNextPage={true}
+          canPreviousPage={false}
+        />
       </PageHeader>
       <div className="w-full px-8 py-8 flex justify-center">
         <div className="container">

@@ -1,11 +1,12 @@
-import { ReactNode } from "react";
-
-interface Props {
-  children: ReactNode
-}
-
-const Body = ({children}: Props) => {
-return <tbody className="">{children}</tbody>;
+const Body = ({
+  children,
+  ...rest
+}: React.HTMLProps<HTMLTableSectionElement>) => {
+  return (
+    <tbody className="" {...rest}>
+      {children}
+    </tbody>
+  );
 };
 
 export default Body;

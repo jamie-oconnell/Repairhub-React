@@ -1,10 +1,28 @@
 mutation Login($username: String!, $password: String!) {
   loginUser(username: $username, password: $password) {
+    id
+    email
+    displayName
+    username
     accountType
+    accessToken
     _role {
       id
       role
       permissions
     }
+    __typename
+  }
+}
+
+query Customers {
+  customers {
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
   }
 }

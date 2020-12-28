@@ -19,6 +19,11 @@ export enum SortByKey {
   UpdatedAt = 'updatedAt'
 }
 
+export enum SortOrder {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUser?: Maybe<CreateUser>;
@@ -41,13 +46,13 @@ export type MutationCreateUserArgs = {
 
 export type MutationAddEditCustomerArgs = {
   id?: Maybe<Scalars['String']>;
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  email: Scalars['String'];
-  phoneNumber: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  phoneNumber?: Maybe<Scalars['String']>;
   alternatePhoneNumber?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
+  address?: Maybe<AddressIn>;
   notificationSms?: Maybe<Scalars['Boolean']>;
   notificationEmail?: Maybe<Scalars['Boolean']>;
 };
@@ -96,7 +101,6 @@ export type Query = {
   roles: Array<Roles>;
   customers: Customers;
   profile?: Maybe<Profile>;
-  refreshToken?: Maybe<Success>;
   logout?: Maybe<Success>;
 };
 
@@ -112,7 +116,7 @@ export type QueryCustomersArgs = {
   after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
   search?: Maybe<Scalars['String']>;
-  sortBy?: Maybe<Scalars['Boolean']>;
+  sortOrder?: Maybe<SortOrder>;
   sortByKey?: Maybe<SortByKey>;
 };
 
@@ -136,6 +140,25 @@ export type Roles = {
   permissions?: Maybe<Scalars['String']>;
 };
 
+export type AddressIn = {
+  id?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  address1?: Maybe<Scalars['String']>;
+  address2?: Maybe<Scalars['String']>;
+  postal?: Maybe<Scalars['String']>;
+};
+
+export type Address = {
+  __typename?: 'Address';
+  id?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  address1?: Maybe<Scalars['String']>;
+  address2?: Maybe<Scalars['String']>;
+  postal?: Maybe<Scalars['String']>;
+};
+
 export type AddEditCustomer = {
   __typename?: 'AddEditCustomer';
   id?: Maybe<Scalars['String']>;
@@ -145,7 +168,7 @@ export type AddEditCustomer = {
   phoneNumber?: Maybe<Scalars['String']>;
   alternatePhoneNumber?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
+  address?: Maybe<Address>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   createdBy?: Maybe<Scalars['String']>;
@@ -166,6 +189,7 @@ export type LoginUser = {
   displayName?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
   accountType?: Maybe<Scalars['String']>;
+  accessToken?: Maybe<Scalars['String']>;
   _role?: Maybe<Role>;
 };
 
@@ -192,7 +216,8 @@ export type Customer = {
   email?: Maybe<Scalars['String']>;
   phoneNumber?: Maybe<Scalars['String']>;
   alternatePhoneNumber?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
+  businessName?: Maybe<Scalars['String']>;
+  addressData?: Maybe<Address>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -206,7 +231,6 @@ export type CustomerEdge = {
 export type Customers = {
   __typename?: 'Customers';
   edges: Array<Maybe<CustomerEdge>>;
-  nodes: Array<Maybe<Customer>>;
   pageInfo: CustomerPageInfo;
   totalCount: Scalars['Int'];
 };
@@ -225,8 +249,8 @@ export type LoginMutationVariables = Exact<{
 export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { loginUser?: Maybe<(
-    { __typename?: 'LoginUser' }
-    & Pick<LoginUser, 'accountType'>
+    { __typename: 'LoginUser' }
+    & Pick<LoginUser, 'id' | 'email' | 'displayName' | 'username' | 'accountType' | 'accessToken'>
     & { _role?: Maybe<(
       { __typename?: 'Role' }
       & Pick<Role, 'id' | 'role' | 'permissions'>
@@ -234,16 +258,37 @@ export type LoginMutation = (
   )> }
 );
 
+export type CustomersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CustomersQuery = (
+  { __typename?: 'Query' }
+  & { customers: (
+    { __typename?: 'Customers' }
+    & Pick<Customers, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'CustomerPageInfo' }
+      & Pick<CustomerPageInfo, 'endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor'>
+    ) }
+  ) }
+);
+
 
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   loginUser(username: $username, password: $password) {
+    id
+    email
+    displayName
+    username
     accountType
+    accessToken
     _role {
       id
       role
       permissions
     }
+    __typename
   }
 }
     `;
@@ -273,3 +318,41 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const CustomersDocument = gql`
+    query Customers {
+  customers {
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}
+    `;
+
+/**
+ * __useCustomersQuery__
+ *
+ * To run a query within a React component, call `useCustomersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCustomersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCustomersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCustomersQuery(baseOptions?: Apollo.QueryHookOptions<CustomersQuery, CustomersQueryVariables>) {
+        return Apollo.useQuery<CustomersQuery, CustomersQueryVariables>(CustomersDocument, baseOptions);
+      }
+export function useCustomersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomersQuery, CustomersQueryVariables>) {
+          return Apollo.useLazyQuery<CustomersQuery, CustomersQueryVariables>(CustomersDocument, baseOptions);
+        }
+export type CustomersQueryHookResult = ReturnType<typeof useCustomersQuery>;
+export type CustomersLazyQueryHookResult = ReturnType<typeof useCustomersLazyQuery>;
+export type CustomersQueryResult = Apollo.QueryResult<CustomersQuery, CustomersQueryVariables>;

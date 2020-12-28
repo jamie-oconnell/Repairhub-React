@@ -1,11 +1,5 @@
-import { ReactNode } from "react";
-
-interface Props {
-    children: ReactNode
-}
-
-const Head = ({children}: Props) => {
-return <thead>{children}</thead>;
+const Head = ({children, ...rest}:  React.HTMLProps<HTMLTableSectionElement>) => {
+return <thead {...rest}>{children}</thead>;
 };
 
 export default Head;

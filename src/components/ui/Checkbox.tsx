@@ -1,4 +1,3 @@
-import React from "react"
 interface Props {
   id?: string;
   indeterminate?: boolean;
@@ -6,38 +5,18 @@ interface Props {
 }
 
 const Checkbox = (props: Props) => {
-  // return (
-  //   // <span className="bg-white border border-gray-20 w-4 h-4 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500 p-0">
-  //   //   <input type="checkbox" className="opacity-0 absolute" />
-  //   //   <svg
-  //   //     className="fill-current hidden w-4 h-4 text-green-500 pointer-events-none"
-  //   //     viewBox="0 0 16 16"
-  //   //   >
-  //   //     <rect width="10" height="10" />
-  //   //   </svg>
-  //   // </span>
-  // );
-
-  return <input type="checkbox" {...props}></input>;
+  return (
+    <label className="inline-block relative cursor-pointer w-4 h-4">
+      <input
+        className="absolute opacity-0 cursor-pointer h-0 w-0"
+        type="checkbox"
+        {...props}
+      />
+      <span className="absolute top-0 left-0 bg-transparent border border-gray-20 h-4 w-4 flex p-0.5 hover:border-oceanBlue">
+        {props.checked && <div className="bg-oceanBlue flex-1"></div>}
+      </span>
+    </label>
+  );
 };
 
 export default Checkbox;
-
-
-
-// const Checkbox = React.forwardRef<HTMLInputElement, Props>(
-//   ({ indeterminate, ...rest }, ref) => {
-//     const defaultRef = React.useRef()
-//     const resolvedRef = ref || defaultRef
-
-//     React.useEffect(() => {
-//       resolvedRef.current.indeterminate = indeterminate
-//     }, [resolvedRef, indeterminate])
-
-//     return (
-//       <>
-//         <input type="checkbox" ref={resolvedRef} {...rest} />
-//       </>
-//     )
-//   }
-// )

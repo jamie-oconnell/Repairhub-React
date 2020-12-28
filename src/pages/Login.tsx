@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 import { useLoginMutation } from "../generated/graphql";
+import { setAccessToken } from "../accessToken";
 
 interface Props {}
 
@@ -27,6 +28,10 @@ const Login = (props: Props) => {
       });
 
       console.log(response);
+      if (response?.data) {
+        //@ts-ignore
+        setAccessToken(response?.data?.loginUser.accessToken)
+      }
     },
   });
   const [login] = useLoginMutation();
@@ -35,7 +40,7 @@ const Login = (props: Props) => {
       <div></div>
       <div className="flex justify-center content-center">
         <form onSubmit={formik.handleSubmit}>
-          <span className="textstyles-header text-gray-100">Sign In</span>
+          <span className="textstyle-header text-gray-100">Sign In</span>
           <div>
             <label htmlFor="username" className="textstyle-body">
               Username

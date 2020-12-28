@@ -1,11 +1,7 @@
-import { ReactNode } from "react";
-
-interface Props {
-  children: ReactNode;
-  [x: string]: any;
-}
-
-const Header = ({ children, ...rest }: Props) => {
+const Header = ({
+  children,
+  ...rest
+}: React.HTMLProps<HTMLTableHeaderCellElement>) => {
   return (
     <th
       className="textstyle-tableheader text-gray-60 px-4 py-tableCell text-left"

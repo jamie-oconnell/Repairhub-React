@@ -1,12 +1,6 @@
-import { ReactNode } from "react";
-
-interface Props {
-  children: ReactNode;
-}
-
-const Table = ({ children, ...other }: Props) => {
+const Table = ({ children }: React.HTMLProps<HTMLTableElement>) => {
   return (
-    <table className="bg-white w-full border border-gray-10 textstyle-body" {...other}>
+    <table className="bg-white w-full border border-gray-10 textstyle-body">
       {children}
     </table>
   );

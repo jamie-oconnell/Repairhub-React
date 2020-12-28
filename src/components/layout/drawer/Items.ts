@@ -1,5 +1,5 @@
 const items = [
-  [{ label: "Dashboard", icon: "dashboard", link: "/dashboard" }],
+  [{ label: "Dashboard", icon: "dashboard", link: "/" }],
   [
     { label: "Point of Sale", icon: "pointOfSale", link: "/pos" },
     { label: "Sale History", icon: "saleHistory", link: "/sale-history" },

@@ -19,16 +19,18 @@ import "focus-visible";
 
 const httpLink = createHttpLink({
   uri: "http://3.21.8.151:2201/graphql",
-  //credentials: "include",
+  // credentials: "include",
 });
 
 const authLink = setContext((_, { headers }) => {
   const token = getAccessToken();
 
+  console.log(token);
+
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : "",
+      "x-access-token": token && token,
     },
   };
 });
@@ -44,6 +46,8 @@ const tokenRefreshLink = new TokenRefreshLink({
 
     try {
       const { exp }: any = jwtDecode(token);
+
+      console.log(exp);
 
       if (Date.now() >= exp * 1000) {
         return false;
