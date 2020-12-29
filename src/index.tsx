@@ -19,7 +19,7 @@ import "focus-visible";
 
 const httpLink = createHttpLink({
   uri: "http://3.21.8.151:2201/graphql",
-  // credentials: "include",
+  credentials: "include",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -30,7 +30,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      "x-access-token": token && token,
+      "x-access-token": `Bearer ${token && token}`,
     },
   };
 });
@@ -62,7 +62,7 @@ const tokenRefreshLink = new TokenRefreshLink({
   fetchAccessToken: () => {
     return fetch("http://3.21.8.151:2201/refresh_token", {
       method: "POST",
-      //credentials: "include",
+      credentials: "include",
     });
   },
   handleFetch: (accessToken) => {
