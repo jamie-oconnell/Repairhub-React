@@ -122,17 +122,6 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
             );
           })}
 
-          {/* <TableRowUI>
-            {loading ? (
-              // Use our custom loading state to show a loading indicator
-              <TableCellUI>Loading...</TableCellUI>
-            ) : (
-              <TableCellUI>
-                Showing {page.length} of ~{controlledPageCount * pageSize}{" "}
-                results
-              </TableCellUI>
-            )}
-          </TableRowUI> */}
         </TableBodyUI>
       </TableUI>
       <pre>

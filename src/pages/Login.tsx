@@ -2,8 +2,9 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
-import { useLoginMutation } from "../generated/graphql";
+import { LoginMutation, useLoginMutation } from "../generated/graphql";
 import { setAccessToken } from "../accessToken";
+import useRouter from "../hooks/router";
 
 interface Props {}
 
@@ -13,6 +14,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Login = (props: Props) => {
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -25,20 +27,34 @@ const Login = (props: Props) => {
           username,
           password,
         },
+        update: (store, { data }) => {
+          if (!data) {
+            return null;
+          }
+
+          // store.writeQuery<LoginMutation>({
+          //   query: User,
+          //   data: {
+          //     me: data.login.user
+          //   }
+          // });
+        },
       });
 
       console.log(response);
       if (response?.data) {
         //@ts-ignore
-        setAccessToken(response?.data?.loginUser.accessToken)
+        setAccessToken(response?.data?.loginUser.accessToken);
       }
+
+      router.push("/");
     },
   });
   const [login] = useLoginMutation();
   return (
     <div className="h-screen bg-white grid grid-cols-2">
       <div></div>
-      <div className="flex justify-center content-center">
+      <div className="flex justify-center items-center">
         <form onSubmit={formik.handleSubmit}>
           <span className="textstyle-header text-gray-100">Sign In</span>
           <div>
@@ -62,7 +78,7 @@ const Login = (props: Props) => {
               onChange={formik.handleChange}
             />
           </div>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" className="w-full">
             Sign In
           </Button>
         </form>

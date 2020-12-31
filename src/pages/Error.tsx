@@ -6,9 +6,9 @@ interface Props {
 
 const Error = (props: Props) => {
     return (
-        <LayoutWithSidebar>
+        <>
             ERROR PAGE
-        </LayoutWithSidebar>
+        </>
     )
 }
 

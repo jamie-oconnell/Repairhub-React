@@ -1,3 +1,6 @@
+@import "react-grid-layout/css/styles.css";
+@import "react-resizable/css/styles.css";
+
 @tailwind base;
 
 @tailwind components;
@@ -5,6 +8,7 @@
 @tailwind utilities;
 
 @layer utilities {
+  /* Custom Styles */
   .fill-screen-height {
     min-height: calc(100vh - 72px);
   }
@@ -67,6 +71,8 @@
     line-height: 2rem;
     letter-spacing: 0px;
   }
+
+  /* React Menu Styles */
   @charset "UTF-8";
   @-webkit-keyframes rc-menu-show-slide-left {
     from {

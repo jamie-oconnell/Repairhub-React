@@ -5,7 +5,6 @@ import Icon from "../components/ui/Icon";
 import TabPane from "../components/ui/TabPane";
 import Tab from "../components/ui/Tab";
 import Tabs from "../components/ui/Tabs";
-import LayoutWithSidebar from "../components/layout/LayoutWithSidebar";
 import useRouter from "../hooks/router";
 import Divider from "../components/ui/Divider";
 
@@ -31,7 +30,7 @@ const Customer = (props: Props) => {
   };
   
   return (
-    <LayoutWithSidebar>
+    <>
       <PageHeader>
         <div className="container flex items-center">
           <Button variant="icon-text" onClick={onBack}>
@@ -158,7 +157,7 @@ const Customer = (props: Props) => {
       <TabPane active={active === 1}>Pane 2</TabPane>
       <TabPane active={active === 2}>Pane 2</TabPane>
       <TabPane active={active === 3}>Pane 2</TabPane>
-    </LayoutWithSidebar>
+    </>
   );
 };
 

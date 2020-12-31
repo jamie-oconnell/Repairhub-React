@@ -4,7 +4,6 @@ import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
 import CustomersTable from "../components/tables/Customers";
 import useRouter from "../hooks/router";
-import LayoutWithSidebar from "../components/layout/LayoutWithSidebar";
 import Checkbox from "../components/ui/Checkbox";
 import { Link } from "react-router-dom";
 import { useCustomersQuery } from "../generated/graphql";
@@ -129,7 +128,7 @@ const Customers = (props: Props) => {
         Cell: ({ row, cell }: any) => (
           <>
             <Checkbox {...row.getToggleRowSelectedProps()} />
-            <Link to={`/customers/view/${row.original.id}`} className="ml-4">
+            <Link to={`/customers/view/${row.original.id}`} className="ml-4 text-oceanBlue">
               {cell.value}
             </Link>
           </>
@@ -155,7 +154,7 @@ const Customers = (props: Props) => {
     []
   );
   return (
-    <LayoutWithSidebar>
+    <>
       <PageHeader>
         <span className="textstyle-header flex-1">Customers</span>
         <Button variant="secondary">Import Customers</Button>
@@ -196,7 +195,7 @@ const Customers = (props: Props) => {
           />
         </div>
       </div>
-    </LayoutWithSidebar>
+    </>
   );
 };
 

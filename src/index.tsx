@@ -18,7 +18,7 @@ import jwtDecode from "jwt-decode";
 import "focus-visible";
 
 const httpLink = createHttpLink({
-  uri: "http://3.21.8.151:2201/graphql",
+  uri: "https://dev.repairhub.io/graphql",
   credentials: "include",
 });
 
@@ -60,7 +60,7 @@ const tokenRefreshLink = new TokenRefreshLink({
     }
   },
   fetchAccessToken: () => {
-    return fetch("http://3.21.8.151:2201/refresh_token", {
+    return fetch("https://dev.repairhub.io/refresh_token", {
       method: "POST",
       credentials: "include",
     });

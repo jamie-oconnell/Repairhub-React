@@ -1,11 +1,23 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import Drawer from "./drawer";
-const LayoutWithSidebar: React.FC = ({ children }) => {
+
+interface Props {
+  drawer: boolean;
+  children: ReactNode;
+}
+
+const LayoutWithSidebar = ({ children, drawer }: Props) => {
   return (
     <>
-      <Drawer open={true} />
+      <Drawer open={drawer} />
       <main className="flex min-h-screen">
-        <div className="flex-1 bg-gray-5 pl-drawer">{children}</div>
+        <div
+          className={`flex-1 bg-gray-5 ${
+            drawer ? "pl-drawer" : "pl-drawerSmall"
+          }`}
+        >
+          {children}
+        </div>
       </main>
     </>
   );

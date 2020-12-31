@@ -5,15 +5,15 @@ import Divider from "../components/ui/Divider";
 import TextInput from "../components/ui/TextInput";
 import Textarea from "../components/ui/Textarea";
 import Icon from "../components/ui/Icon";
-import LayoutWithSidebar from "../components/layout/LayoutWithSidebar";
 import useRouter from "../hooks/router";
+import AddressAutocomplete from "../components/ui/AddressAutocomplete"
 
 interface Props {}
 
 const CreateCustomer = (props: Props) => {
   const router = useRouter();
   return (
-    <LayoutWithSidebar>
+    <>
       <PageHeader>
         <div className="container flex items-center">
           <Button className="mr-2" variant="icon-text" onClick={(e) => router.push("/customers")}>
@@ -145,12 +145,13 @@ const CreateCustomer = (props: Props) => {
                   />
                 </div>
                 <Button variant="text">Enter Address Manually</Button>
+                <AddressAutocomplete /> 
               </div>
             </div>
           </div>
         </div>
       </div>
-    </LayoutWithSidebar>
+    </>
   );
 };
 
