@@ -2,7 +2,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import Button from "../components/ui/Button";
 import TextInput from "../components/ui/TextInput";
-import { LoginMutation, useLoginMutation } from "../generated/graphql";
+import { useLoginMutation } from "../generated/graphql";
 import { setAccessToken } from "../accessToken";
 import useRouter from "../hooks/router";
 

@@ -1,13 +1,12 @@
 import React from "react";
-import LayoutWithSidebar from "../components/layout/LayoutWithSidebar";
 import PageHeader from "../components/layout/PageHeader";
 import Button from "../components/ui/Button";
-import Widget from "../components/ui/dashboard/Widget";
-import RGL, { WidthProvider } from "react-grid-layout";
+// import Widget from "../components/ui/dashboard/Widget";
+// import RGL, { WidthProvider } from "react-grid-layout";
 
-interface Props {}
+// interface Props {}
 
-const ReactGridLayout = WidthProvider(RGL);
+// const ReactGridLayout = WidthProvider(RGL);
 
 class Dashboard extends React.Component {
   render() {

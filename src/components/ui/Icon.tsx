@@ -10,7 +10,7 @@ interface Props {
 const Icon = ({ size, icon, className, viewBox }: Props) => {
   return (
     <svg
-      className={"fill-current" + " " + className}
+      className={`fill-current ${className}`}
       style={{ display: "inline-block", verticalAlign: "middle" }}
       viewBox={viewBox}
       width={`${size}px`}

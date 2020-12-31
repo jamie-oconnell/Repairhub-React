@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Routes from "./Routes";
-import { useMediaQuery } from "react-responsive";
-import { setAccessToken } from "./accessToken";
+// import { useMediaQuery } from "react-responsive";
+// import { setAccessToken } from "./accessToken";
 import useRouter from "./hooks/router";
 import LayoutWithSidebar from "./components/layout/LayoutWithSidebar";
 
@@ -9,25 +9,24 @@ interface Props {}
 
 const App: React.FC<Props> = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
-  const [open, setOpen] = useState(true);
+  // const [open, setOpen] = useState(true);
 
-  const isSmallScreen = useMediaQuery(
-    { query: "(max-width: 1224px)" },
-    undefined,
-    () => {
-      setOpen(false);
-    }
-  );
+  // const isSmallScreen = useMediaQuery(
+  //   { query: "(max-width: 1224px)" },
+  //   undefined,
+  //   () => {
+  //     setOpen(false);
+  //   }
+  // );
 
-  const isBigScreen = useMediaQuery(
-    { query: '(max-width: 1440px)' },
-    undefined,
-    () => {
-      setOpen(true);
-    }
-  );
+  // const isBigScreen = useMediaQuery(
+  //   { query: '(max-width: 1440px)' },
+  //   undefined,
+  //   () => {
+  //     setOpen(true);
+  //   }
+  // );
 
   useEffect(() => {
     fetch("https://dev.repairhub.io/refresh_token", {
@@ -54,7 +53,7 @@ const App: React.FC<Props> = () => {
   return (
     <div className="App">
       {router.pathname !== "/login" ? (
-        <LayoutWithSidebar drawer={open}>
+        <LayoutWithSidebar drawer={true}>
           <Routes />
         </LayoutWithSidebar>
       ) : (

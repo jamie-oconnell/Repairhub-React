@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTable, Column, useSortBy, useRowSelect } from "react-table";
 import {
   Table as TableUI,
@@ -8,7 +8,7 @@ import {
   Cell as TableCellUI,
   Row as TableRowUI,
 } from "../ui/table/";
-import Button from "../ui/Button";
+// import Button from "../ui/Button";
 import Icon from "../ui/Icon";
 //@ts-ignore
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
@@ -23,7 +23,7 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
-  const { columns, data, fetchData, loading } = props;
+  const { columns, data } = props;
 
   const {
     getTableProps,

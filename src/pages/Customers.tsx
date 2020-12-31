@@ -128,7 +128,10 @@ const Customers = (props: Props) => {
         Cell: ({ row, cell }: any) => (
           <>
             <Checkbox {...row.getToggleRowSelectedProps()} />
-            <Link to={`/customers/view/${row.original.id}`} className="ml-4 text-oceanBlue">
+            <Link
+              to={`/customers/view/${row.original.id}`}
+              className="ml-4 text-oceanBlue"
+            >
               {cell.value}
             </Link>
           </>
@@ -188,7 +191,7 @@ const Customers = (props: Props) => {
       <div className="w-full px-8 py-8 flex justify-center">
         <div className="container">
           <CustomersTable
-            fetchData={() => console.log("fetch data")}
+            fetchData={() => console.log(customers)}
             pageCount={10}
             columns={columns}
             data={data}
