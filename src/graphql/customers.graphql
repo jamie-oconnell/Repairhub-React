@@ -1,0 +1,25 @@
+query GetCustomersTable(
+  $pageSize: Int
+  $sortDirection: SortOrder
+  $search: String
+) {
+  customers(first: $pageSize, sortOrder: $sortDirection, search: $search) {
+    edges {
+      cursor
+      node {
+        id
+        firstName
+        lastName
+        email
+        phoneNumber
+      }
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
+  }
+}

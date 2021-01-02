@@ -25,8 +25,6 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   const token = getAccessToken();
 
-  console.log(token);
-
   return {
     headers: {
       ...headers,
@@ -46,8 +44,6 @@ const tokenRefreshLink = new TokenRefreshLink({
 
     try {
       const { exp }: any = jwtDecode(token);
-
-      console.log(exp);
 
       if (Date.now() >= exp * 1000) {
         return false;

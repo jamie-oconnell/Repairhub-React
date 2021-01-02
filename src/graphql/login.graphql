@@ -15,14 +15,3 @@ mutation Login($username: String!, $password: String!) {
   }
 }
 
-query Customers {
-  customers {
-    pageInfo {
-      endCursor
-      hasNextPage
-      hasPreviousPage
-      startCursor
-    }
-    totalCount
-  }
-}

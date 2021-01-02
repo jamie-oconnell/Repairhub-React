@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 interface Props {
-  variant: "primary" | "secondary" | "text" | "icon-text" | "icon-outline" | "icon-secondary";
+  variant: "primary" | "secondary" | "text" | "icon-text" | "icon-outline" | "icon-secondary" | "icon-transparent";
   type?: "submit" | "button" | "reset";
   children: ReactNode;
   className?: string;
@@ -43,6 +43,11 @@ const Button = ({
   if (variant === "icon-text") {
     classname =
       "text-gray-60 p-2 focus:outline-none focus-visible:ring-4 focus-visible:border-focus hover:bg-oceanBlue6 border border-opacity-0 hover:border-opacity-100 border-oceanBlue hover:text-oceanBlue transition";
+  }
+
+  if (variant === "icon-transparent") {
+    classname =
+      "text-gray-60 p-2 focus:outline-none focus-visible:ring-4 focus-visible:border-focus hover:bg-gray-85 border border-opacity-0 border-oceanBlue hover:text-white transition";
   }
 
   return (

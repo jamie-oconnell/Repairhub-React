@@ -1,5 +1,5 @@
 overwrite: true
-schema: "http://3.21.8.151:2201/graphql"
+schema: "https://dev.repairhub.io/graphql"
 documents: "src/graphql/*.graphql"
 generates:
   src/generated/graphql.tsx:

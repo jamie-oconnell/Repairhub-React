@@ -4,12 +4,13 @@ import Drawer from "./drawer";
 interface Props {
   drawer: boolean;
   children: ReactNode;
+  setDrawer: Function;
 }
 
-const LayoutWithSidebar = ({ children, drawer }: Props) => {
+const LayoutWithSidebar = ({ children, drawer, setDrawer }: Props) => {
   return (
     <>
-      <Drawer open={drawer} />
+      <Drawer open={drawer} setOpen={setDrawer}/>
       <main className="flex min-h-screen">
         <div
           className={`flex-1 bg-gray-5 ${

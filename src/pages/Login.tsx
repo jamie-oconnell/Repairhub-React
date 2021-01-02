@@ -8,6 +8,7 @@ import useRouter from "../hooks/router";
 
 interface Props {}
 
+
 const validationSchema = yup.object().shape({
   username: yup.string(),
   password: yup.string(),
@@ -15,6 +16,7 @@ const validationSchema = yup.object().shape({
 
 const Login = (props: Props) => {
   const router = useRouter();
+  let { from }: any = router.location.state || { from: { pathname: "/" } };
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -47,7 +49,7 @@ const Login = (props: Props) => {
         setAccessToken(response?.data?.loginUser.accessToken);
       }
 
-      router.push("/");
+      router.push(from);
     },
   });
   const [login] = useLoginMutation();

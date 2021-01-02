@@ -240,6 +240,32 @@ export type Success = {
   message: Scalars['String'];
 };
 
+export type GetCustomersTableQueryVariables = Exact<{
+  pageSize?: Maybe<Scalars['Int']>;
+  sortDirection?: Maybe<SortOrder>;
+  search?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetCustomersTableQuery = (
+  { __typename?: 'Query' }
+  & { customers: (
+    { __typename?: 'Customers' }
+    & Pick<Customers, 'totalCount'>
+    & { edges: Array<Maybe<(
+      { __typename?: 'CustomerEdge' }
+      & Pick<CustomerEdge, 'cursor'>
+      & { node: (
+        { __typename?: 'Customer' }
+        & Pick<Customer, 'id' | 'firstName' | 'lastName' | 'email' | 'phoneNumber'>
+      ) }
+    )>>, pageInfo: (
+      { __typename?: 'CustomerPageInfo' }
+      & Pick<CustomerPageInfo, 'endCursor' | 'startCursor' | 'hasNextPage' | 'hasPreviousPage'>
+    ) }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -258,22 +284,58 @@ export type LoginMutation = (
   )> }
 );
 
-export type CustomersQueryVariables = Exact<{ [key: string]: never; }>;
 
+export const GetCustomersTableDocument = gql`
+    query GetCustomersTable($pageSize: Int, $sortDirection: SortOrder, $search: String) {
+  customers(first: $pageSize, sortOrder: $sortDirection, search: $search) {
+    edges {
+      cursor
+      node {
+        id
+        firstName
+        lastName
+        email
+        phoneNumber
+      }
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
+  }
+}
+    `;
 
-export type CustomersQuery = (
-  { __typename?: 'Query' }
-  & { customers: (
-    { __typename?: 'Customers' }
-    & Pick<Customers, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'CustomerPageInfo' }
-      & Pick<CustomerPageInfo, 'endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor'>
-    ) }
-  ) }
-);
-
-
+/**
+ * __useGetCustomersTableQuery__
+ *
+ * To run a query within a React component, call `useGetCustomersTableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCustomersTableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCustomersTableQuery({
+ *   variables: {
+ *      pageSize: // value for 'pageSize'
+ *      sortDirection: // value for 'sortDirection'
+ *      search: // value for 'search'
+ *   },
+ * });
+ */
+export function useGetCustomersTableQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomersTableQuery, GetCustomersTableQueryVariables>) {
+        return Apollo.useQuery<GetCustomersTableQuery, GetCustomersTableQueryVariables>(GetCustomersTableDocument, baseOptions);
+      }
+export function useGetCustomersTableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomersTableQuery, GetCustomersTableQueryVariables>) {
+          return Apollo.useLazyQuery<GetCustomersTableQuery, GetCustomersTableQueryVariables>(GetCustomersTableDocument, baseOptions);
+        }
+export type GetCustomersTableQueryHookResult = ReturnType<typeof useGetCustomersTableQuery>;
+export type GetCustomersTableLazyQueryHookResult = ReturnType<typeof useGetCustomersTableLazyQuery>;
+export type GetCustomersTableQueryResult = Apollo.QueryResult<GetCustomersTableQuery, GetCustomersTableQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   loginUser(username: $username, password: $password) {
@@ -318,41 +380,3 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const CustomersDocument = gql`
-    query Customers {
-  customers {
-    pageInfo {
-      endCursor
-      hasNextPage
-      hasPreviousPage
-      startCursor
-    }
-    totalCount
-  }
-}
-    `;
-
-/**
- * __useCustomersQuery__
- *
- * To run a query within a React component, call `useCustomersQuery` and pass it any options that fit your needs.
- * When your component renders, `useCustomersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCustomersQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCustomersQuery(baseOptions?: Apollo.QueryHookOptions<CustomersQuery, CustomersQueryVariables>) {
-        return Apollo.useQuery<CustomersQuery, CustomersQueryVariables>(CustomersDocument, baseOptions);
-      }
-export function useCustomersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CustomersQuery, CustomersQueryVariables>) {
-          return Apollo.useLazyQuery<CustomersQuery, CustomersQueryVariables>(CustomersDocument, baseOptions);
-        }
-export type CustomersQueryHookResult = ReturnType<typeof useCustomersQuery>;
-export type CustomersLazyQueryHookResult = ReturnType<typeof useCustomersLazyQuery>;
-export type CustomersQueryResult = Apollo.QueryResult<CustomersQuery, CustomersQueryVariables>;
