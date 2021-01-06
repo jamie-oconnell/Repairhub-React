@@ -4,7 +4,7 @@ import profile from "../../../assets/imgs/profile.png";
 import Button from "../../ui/Button";
 
 interface Props {
-  userName: string;
+  userName: string| undefined;
   hideText?: boolean;
   open?: boolean;
 }

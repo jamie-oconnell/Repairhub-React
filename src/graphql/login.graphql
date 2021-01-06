@@ -15,3 +15,12 @@ mutation Login($username: String!, $password: String!) {
   }
 }
 
+query Me {
+  me {
+    id
+    email
+    displayName
+    username
+    accountType
+  }
+}

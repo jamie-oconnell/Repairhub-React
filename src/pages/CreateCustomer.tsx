@@ -28,8 +28,8 @@ const CreateCustomer = (props: Props) => {
       </PageHeader>
       <div className="bg-white flex w-full justify-center fill-screen-height">
         <div className="container flex justify-center">
-          <div style={{ maxWidth: "732px" }}>
-            <div className="grid grid-cols-2 py-8">
+          <div style={{ maxWidth: "732px" }} className={`px-8 lg:px-0`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 py-8">
               <div>
                 <div className="textstyle-emphasisedbody">
                   General Information
@@ -76,7 +76,7 @@ const CreateCustomer = (props: Props) => {
               </div>
             </div>
             <Divider />
-            <div className="grid grid-cols-2 py-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 py-8">
               <div>
                 <div className="textstyle-emphasisedbody">
                   Additional Information
@@ -108,20 +108,20 @@ const CreateCustomer = (props: Props) => {
                 </div>
                 <div className="py-4">
                   <div className="textstyle-body ">Notifications</div>
-                  <div>
+                  <div className="pt-3 flex items-center">
                     <Checkbox id="notifications-sms" />
                     <label
                       htmlFor="notifications-sms"
-                      className="textstyle-body "
+                      className="textstyle-body ml-4"
                     >
                       SMS
                     </label>
                   </div>
-                  <div>
+                  <div className="pt-3 flex items-center">
                     <Checkbox id="notifications-email" />
                     <label
                       htmlFor="notifications-email"
-                      className="textstyle-body "
+                      className="textstyle-body ml-4"
                     >
                       Email
                     </label>

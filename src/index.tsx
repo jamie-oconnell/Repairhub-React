@@ -12,6 +12,7 @@ import {
   createHttpLink,
   from,
 } from "@apollo/client";
+import { AuthProvider } from "./context/auth";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { setContext } from "@apollo/client/link/context";
 import jwtDecode from "jwt-decode";
@@ -55,11 +56,13 @@ const tokenRefreshLink = new TokenRefreshLink({
       return false;
     }
   },
-  fetchAccessToken: () => {
-    return fetch("https://dev.repairhub.io/refresh_token", {
-      method: "POST",
+  fetchAccessToken: async () => {
+    const res = await fetch("https://dev.repairhub.io/refresh_token", {
+      method: "GET",
       credentials: "include",
     });
+    const { accessToken } = await res.json();
+    return accessToken;
   },
   handleFetch: (accessToken) => {
     setAccessToken(accessToken);
@@ -78,9 +81,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <Router>
-        <App />
-      </Router>
+      <AuthProvider>
+        <Router>
+          <App />
+        </Router>
+      </AuthProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")

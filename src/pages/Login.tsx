@@ -5,9 +5,11 @@ import TextInput from "../components/ui/TextInput";
 import { useLoginMutation } from "../generated/graphql";
 import { setAccessToken } from "../accessToken";
 import useRouter from "../hooks/router";
+import _ from "lodash";
+
+import { useAuthDispatch, useAuthState } from "../context/auth";
 
 interface Props {}
-
 
 const validationSchema = yup.object().shape({
   username: yup.string(),
@@ -16,7 +18,15 @@ const validationSchema = yup.object().shape({
 
 const Login = (props: Props) => {
   const router = useRouter();
+  const [login, { error }] = useLoginMutation();
+  const dispatch = useAuthDispatch();
+  const { authenticated } = useAuthState();
   let { from }: any = router.location.state || { from: { pathname: "/" } };
+
+  if (authenticated) {
+    router.push("/");
+  }
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -29,37 +39,29 @@ const Login = (props: Props) => {
           username,
           password,
         },
-        update: (store, { data }) => {
-          if (!data) {
-            return null;
-          }
-
-          // store.writeQuery<LoginMutation>({
-          //   query: User,
-          //   data: {
-          //     me: data.login.user
-          //   }
-          // });
-        },
       });
 
-      console.log(response);
       if (response?.data) {
         //@ts-ignore
         setAccessToken(response?.data?.loginUser.accessToken);
       }
 
+      dispatch("LOGIN", _.omit(response.data?.loginUser, ["accessToken"]));
+
       router.push(from);
     },
   });
-  const [login] = useLoginMutation();
   return (
     <div className="h-screen bg-white grid grid-cols-2">
       <div></div>
       <div className="flex justify-center items-center">
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={formik.handleSubmit}
+          className="w-full"
+          style={{ maxWidth: "420px" }}
+        >
           <span className="textstyle-header text-gray-100">Sign In</span>
-          <div>
+          <div className="mt-8">
             <label htmlFor="username" className="textstyle-body">
               Username
             </label>
@@ -67,9 +69,11 @@ const Login = (props: Props) => {
               id="username"
               value={formik.values.username}
               onChange={formik.handleChange}
+              className="mt-2"
+              placeholder="Username"
             />
           </div>
-          <div>
+          <div className="mt-8">
             <label htmlFor="password" className="textstyle-body">
               Password
             </label>
@@ -78,9 +82,11 @@ const Login = (props: Props) => {
               type="password"
               value={formik.values.password}
               onChange={formik.handleChange}
+              className="mt-2"
+              placeholder="Password"
             />
           </div>
-          <Button variant="primary" type="submit" className="w-full">
+          <Button variant="primary" type="submit" className="w-full mt-8">
             Sign In
           </Button>
         </form>

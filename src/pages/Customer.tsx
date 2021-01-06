@@ -71,8 +71,8 @@ const Customer = (props: Props) => {
       <TabPane active={active === 0}>
         <div className="bg-white flex w-full justify-center fill-screen-height-dual">
           <div className="container flex justify-center">
-            <div style={{ maxWidth: "732px" }}>
-              <div className="grid grid-cols-2 py-8">
+            <div style={{ maxWidth: "732px" }} className={`px-8 lg:px-0`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 py-8">
                 <div>
                   <div className="textstyle-emphasisedbody">
                     General Information
@@ -107,7 +107,7 @@ const Customer = (props: Props) => {
                 </div>
               </div>
               <Divider />
-              <div className="grid grid-cols-2 py-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 py-8">
                 <div>
                   <div className="textstyle-emphasisedbody">
                     Additional Information

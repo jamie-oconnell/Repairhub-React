@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Route, Redirect } from "react-router-dom";
+import { useAuthState } from "../../context/auth";
 
 interface Props {
   children: ReactNode;
@@ -7,13 +8,12 @@ interface Props {
 }
 
 const ProtectedRoute = ({ children, ...rest }: Props) => {
-  // const { authenticated } = useAuthState()
-  const authenticated = true;
+  const { authenticated } = useAuthState();
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        authenticated ? (
+        authenticated === true ? (
           children
         ) : (
           <Redirect

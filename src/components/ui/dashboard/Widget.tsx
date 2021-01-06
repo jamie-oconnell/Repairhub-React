@@ -1,11 +1,22 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface Props {
-  children: ReactNode;
+  className?: string;
+  key?: string;
+  style?: { [x: string]: string };
+  children?: ReactNode[] | string;
 }
 
-const Widget = ({ children }: Props) => {
-  return <div className="bg-white">{children}</div>;
+const Widget = ({ className, style = {}, children, ...rest }: Props) => {
+  return (
+    <div
+      className={`bg-white ${className && className}`}
+      style={style}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
 };
 
 export default Widget;

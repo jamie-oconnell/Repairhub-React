@@ -1,80 +1,86 @@
-// import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import { useMeLazyQuery } from "../generated/graphql";
 
-// interface User {
-//   username: string;
-//   email: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
+interface User {
+  username: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-// interface State {
-//   authenticated: boolean;
-//   user: User | undefined | null;
-//   loading: boolean;
-// }
+interface State {
+  authenticated: boolean;
+  user: User | undefined | null;
+  loading: boolean;
+}
 
-// interface Action {
-//   type: string;
-//   payload: any;
-// }
+interface Action {
+  type: string;
+  payload: any;
+}
 
-// const StateContext = createContext<State>({
-//   authenticated: false,
-//   user: null,
-//   loading: true,
-// });
+interface IContext {
+  (type: string, payload?: any): void;
+}
 
-// const DispatchContext = createContext(null);
+const StateContext = createContext<State>({
+  authenticated: false,
+  user: null,
+  loading: true,
+});
 
-// const reducer = (state: State, { type, payload }: Action) => {
-//   switch (type) {
-//     case "LOGIN":
-//       return {
-//         ...state,
-//         authenticated: true,
-//         user: payload,
-//       };
-//     case "LOGOUT":
-//       return { ...state, authenticated: false, user: null };
-//     case "STOP_LOADING":
-//       return { ...state, loading: false };
-//     default:
-//       throw new Error(`Unknow action type: ${type}`);
-//   }
-// };
+const DispatchContext = createContext({} as IContext);
 
-// export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-//   const [state, defaultDispatch] = useReducer(reducer, {
-//     user: null,
-//     authenticated: false,
-//     loading: true,
-//   });
+const reducer = (state: State, { type, payload }: Action) => {
+  switch (type) {
+    case "LOGIN":
+      return {
+        ...state,
+        authenticated: true,
+        user: payload,
+      };
+    case "LOGOUT":
+      return { ...state, authenticated: false, user: null };
+    case "STOP_LOADING":
+      return { ...state, loading: false };
+    default:
+      throw new Error(`Unknow action type: ${type}`);
+  }
+};
 
-//   const dispatch = (type: string, payload?: any) =>
-//     defaultDispatch({ type, payload });
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [me, { data }] = useMeLazyQuery();
+  const [state, defaultDispatch] = useReducer(reducer, {
+    user: null,
+    authenticated: false,
+    loading: true,
+  });
 
-//   useEffect(() => {
-//     async function loadUser() {
-//       try {
-//         const res = await Axios.get("/auth/me");
-//         dispatch("LOGIN", res.data);
-//       } catch (err) {
-//         console.log(err);
-//       } finally {
-//         dispatch("STOP_LOADING");
-//       }
-//     }
-//     loadUser();
-//   }, []);
+  const dispatch = (type: string, payload?: any) =>
+    defaultDispatch({ type, payload });
 
-//   return (
-//     <DispatchContext.Provider value={dispatch}>
-//       <StateContext.Provider value={state}>{children}</StateContext.Provider>
-//     </DispatchContext.Provider>
-//   );
-// };
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        me();
+        if (data?.me) {
+          dispatch("LOGIN", data);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        dispatch("STOP_LOADING");
+      }
+    }
+    loadUser();
+  }, [me, data]);
 
-// export const useAuthState = () => useContext(StateContext);
-// export const useAuthDispatch = () => useContext(DispatchContext);
+  return (
+    <DispatchContext.Provider value={dispatch}>
+      <StateContext.Provider value={state}>{children}</StateContext.Provider>
+    </DispatchContext.Provider>
+  );
+};
 
-export {};
+export const useAuthState = () => useContext(StateContext);
+export const useAuthDispatch = () => useContext(DispatchContext);
