@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 import Login from "./pages/Login";
 import Error from "./pages/Error";
+import ClearAuth from "./pages/ClearAuth";
 
 // Dashboard
 import Dashboard from "./pages/Dashboard";
@@ -29,53 +30,32 @@ interface Props {}
 const Routes = (props: Props) => {
   return (
     <Switch>
-      <ProtectedRoute path="/" exact>
-        <Dashboard />
-      </ProtectedRoute>
-      <Route path="/login" component={Login} exact>
-        <Login />
-      </Route>
+      <ProtectedRoute path="/" component={Dashboard} exact />
+      <Route path="/login" component={Login} exact />
+      <Route path="/auth/clear" component={ClearAuth} exact />
 
       {/* Customers */}
-      <ProtectedRoute path="/customers" exact>
-        <Customers />
-      </ProtectedRoute>
-      <ProtectedRoute path="/customers/create" exact>
-        <CreateCustomer />
-      </ProtectedRoute>
-      <ProtectedRoute path="/customers/view/:id" exact>
-        <Customer />
-      </ProtectedRoute>
+      <ProtectedRoute path="/customers" component={Customers} exact />
+      <ProtectedRoute
+        path="/customers/create"
+        component={CreateCustomer}
+        exact
+      />
+      <ProtectedRoute path="/customers/view/:id" component={Customer} exact />
 
       {/* Tickets */}
-      <ProtectedRoute path="/tickets" exact>
-        <Tickets />
-      </ProtectedRoute>
-      <ProtectedRoute path="/tickets/create" exact>
-        <CreateTicket />
-      </ProtectedRoute>
-      <ProtectedRoute path="/tickets/view/:id" exact>
-        <Ticket />
-      </ProtectedRoute>
+      <ProtectedRoute path="/tickets" component={Tickets} exact />
+      <ProtectedRoute path="/tickets/create" component={CreateTicket} exact />
+      <ProtectedRoute path="/tickets/view/:id" component={Ticket} exact />
 
       {/* Devices */}
-      <ProtectedRoute path="/devices" exact>
-        <Devices />
-      </ProtectedRoute>
-      <ProtectedRoute path="/devices/create" exact>
-        <CreateDevice />
-      </ProtectedRoute>
-      <ProtectedRoute path="/devices/view/:id" exact>
-        <Device />
-      </ProtectedRoute>
+      <ProtectedRoute path="/devices" component={Devices} exact />
+      <ProtectedRoute path="/devices/create" component={CreateDevice} exact />
+      <ProtectedRoute path="/devices/view/:id" component={Device} exact />
 
-      <ProtectedRoute path="/settings" exact>
-        <Settings />
-      </ProtectedRoute>
+      <ProtectedRoute path="/settings" component={Settings} exact />
 
-      <ProtectedRoute>
-        <Error />
-      </ProtectedRoute>
+      <ProtectedRoute component={Error} />
     </Switch>
   );
 };

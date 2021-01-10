@@ -2,14 +2,21 @@ query GetCustomersTable(
   $pageSize: Int
   $sortDirection: SortOrder
   $search: String
+  $after: String
+  $before: String
 ) {
-  customers(first: $pageSize, sortOrder: $sortDirection, search: $search) {
+  customers(
+    first: $pageSize
+    sortOrder: $sortDirection
+    search: $search
+    after: $after
+    before: $before
+  ) {
     edges {
       cursor
       node {
         id
-        firstName
-        lastName
+        name
         email
         phoneNumber
       }
@@ -21,5 +28,28 @@ query GetCustomersTable(
       hasPreviousPage
     }
     totalCount
+  }
+}
+
+query GetCustomer($id: String) {
+  customer(id: $id) {
+    id
+    firstName
+    lastName
+    name
+    email
+    phoneNumber
+    alternatePhoneNumber
+    businessName
+    addressData {
+      id
+      city
+      country
+      address1
+      address2
+      postal
+    }
+    createdAt
+    updatedAt
   }
 }

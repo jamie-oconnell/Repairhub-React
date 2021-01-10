@@ -71,8 +71,8 @@
     line-height: 2rem;
     letter-spacing: 0px;
   }
-  .menu-tooltip{
-    @apply rounded-none bg-gray-95   !important
+  .menu-tooltip {
+    @apply rounded-none bg-gray-95   !important;
   }
 
   /* React Menu Styles */
@@ -437,5 +437,15 @@
   .rc-menu-button:active {
   }
   .rc-menu-button:disabled {
+  }
+
+  .react-grid-item.react-grid-placeholder {
+    @apply bg-oceanBlue6 border border-oceanBlue;
+    opacity: 1;
+  }
+
+  .react-grid-item.react-draggable-dragging {
+    @apply border border-oceanBlue;
+    @apply cursor-move;
   }
 }

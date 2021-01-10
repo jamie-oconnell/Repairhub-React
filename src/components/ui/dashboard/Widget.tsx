@@ -10,7 +10,7 @@ interface Props {
 const Widget = ({ className, style = {}, children, ...rest }: Props) => {
   return (
     <div
-      className={`bg-white ${className && className}`}
+      className={`bg-white border border-gray-10 ${className && className}`}
       style={style}
       {...rest}
     >

@@ -16,7 +16,8 @@ export type Scalars = {
 export enum SortByKey {
   Id = 'ID',
   CreatedAt = 'CREATED_AT',
-  UpdatedAt = 'UPDATED_AT'
+  UpdatedAt = 'UPDATED_AT',
+  Name = 'NAME'
 }
 
 export enum SortOrder {
@@ -27,7 +28,7 @@ export enum SortOrder {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser?: Maybe<CreateUser>;
-  addEditCustomer?: Maybe<AddEditCustomer>;
+  addEditCustomer?: Maybe<Customer>;
   loginUser?: Maybe<LoginUser>;
   completeUserProfile?: Maybe<Success>;
   forgotPassword?: Maybe<Success>;
@@ -100,6 +101,7 @@ export type Query = {
   __typename?: 'Query';
   roles: Array<Roles>;
   customers: Customers;
+  customer?: Maybe<Customer>;
   profile?: Maybe<Profile>;
   me?: Maybe<Me>;
   logout?: Maybe<Success>;
@@ -119,6 +121,11 @@ export type QueryCustomersArgs = {
   search?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<SortOrder>;
   sortByKey?: Maybe<SortByKey>;
+};
+
+
+export type QueryCustomerArgs = {
+  id?: Maybe<Scalars['String']>;
 };
 
 
@@ -158,23 +165,6 @@ export type Address = {
   address1?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
   postal?: Maybe<Scalars['String']>;
-};
-
-export type AddEditCustomer = {
-  __typename?: 'AddEditCustomer';
-  id?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  firstName?: Maybe<Scalars['String']>;
-  lastName?: Maybe<Scalars['String']>;
-  phoneNumber?: Maybe<Scalars['String']>;
-  alternatePhoneNumber?: Maybe<Scalars['String']>;
-  notes?: Maybe<Scalars['String']>;
-  address?: Maybe<Address>;
-  createdAt?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-  createdBy?: Maybe<Scalars['String']>;
-  notificationSms?: Maybe<Scalars['Boolean']>;
-  notificationEmail?: Maybe<Scalars['Boolean']>;
 };
 
 export type Profile = {
@@ -256,6 +246,8 @@ export type GetCustomersTableQueryVariables = Exact<{
   pageSize?: Maybe<Scalars['Int']>;
   sortDirection?: Maybe<SortOrder>;
   search?: Maybe<Scalars['String']>;
+  after?: Maybe<Scalars['String']>;
+  before?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -269,13 +261,30 @@ export type GetCustomersTableQuery = (
       & Pick<CustomerEdge, 'cursor'>
       & { node: (
         { __typename?: 'Customer' }
-        & Pick<Customer, 'id' | 'firstName' | 'lastName' | 'email' | 'phoneNumber'>
+        & Pick<Customer, 'id' | 'name' | 'email' | 'phoneNumber'>
       ) }
     )>>, pageInfo: (
       { __typename?: 'CustomerPageInfo' }
       & Pick<CustomerPageInfo, 'endCursor' | 'startCursor' | 'hasNextPage' | 'hasPreviousPage'>
     ) }
   ) }
+);
+
+export type GetCustomerQueryVariables = Exact<{
+  id?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetCustomerQuery = (
+  { __typename?: 'Query' }
+  & { customer?: Maybe<(
+    { __typename?: 'Customer' }
+    & Pick<Customer, 'id' | 'firstName' | 'lastName' | 'name' | 'email' | 'phoneNumber' | 'alternatePhoneNumber' | 'businessName' | 'createdAt' | 'updatedAt'>
+    & { addressData?: Maybe<(
+      { __typename?: 'Address' }
+      & Pick<Address, 'id' | 'city' | 'country' | 'address1' | 'address2' | 'postal'>
+    )> }
+  )> }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -309,14 +318,19 @@ export type MeQuery = (
 
 
 export const GetCustomersTableDocument = gql`
-    query GetCustomersTable($pageSize: Int, $sortDirection: SortOrder, $search: String) {
-  customers(first: $pageSize, sortOrder: $sortDirection, search: $search) {
+    query GetCustomersTable($pageSize: Int, $sortDirection: SortOrder, $search: String, $after: String, $before: String) {
+  customers(
+    first: $pageSize
+    sortOrder: $sortDirection
+    search: $search
+    after: $after
+    before: $before
+  ) {
     edges {
       cursor
       node {
         id
-        firstName
-        lastName
+        name
         email
         phoneNumber
       }
@@ -347,6 +361,8 @@ export const GetCustomersTableDocument = gql`
  *      pageSize: // value for 'pageSize'
  *      sortDirection: // value for 'sortDirection'
  *      search: // value for 'search'
+ *      after: // value for 'after'
+ *      before: // value for 'before'
  *   },
  * });
  */
@@ -359,6 +375,56 @@ export function useGetCustomersTableLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetCustomersTableQueryHookResult = ReturnType<typeof useGetCustomersTableQuery>;
 export type GetCustomersTableLazyQueryHookResult = ReturnType<typeof useGetCustomersTableLazyQuery>;
 export type GetCustomersTableQueryResult = Apollo.QueryResult<GetCustomersTableQuery, GetCustomersTableQueryVariables>;
+export const GetCustomerDocument = gql`
+    query GetCustomer($id: String) {
+  customer(id: $id) {
+    id
+    firstName
+    lastName
+    name
+    email
+    phoneNumber
+    alternatePhoneNumber
+    businessName
+    addressData {
+      id
+      city
+      country
+      address1
+      address2
+      postal
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetCustomerQuery__
+ *
+ * To run a query within a React component, call `useGetCustomerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCustomerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCustomerQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCustomerQuery(baseOptions?: Apollo.QueryHookOptions<GetCustomerQuery, GetCustomerQueryVariables>) {
+        return Apollo.useQuery<GetCustomerQuery, GetCustomerQueryVariables>(GetCustomerDocument, baseOptions);
+      }
+export function useGetCustomerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCustomerQuery, GetCustomerQueryVariables>) {
+          return Apollo.useLazyQuery<GetCustomerQuery, GetCustomerQueryVariables>(GetCustomerDocument, baseOptions);
+        }
+export type GetCustomerQueryHookResult = ReturnType<typeof useGetCustomerQuery>;
+export type GetCustomerLazyQueryHookResult = ReturnType<typeof useGetCustomerLazyQuery>;
+export type GetCustomerQueryResult = Apollo.QueryResult<GetCustomerQuery, GetCustomerQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   loginUser(username: $username, password: $password) {

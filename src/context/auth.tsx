@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
-import { useMeLazyQuery } from "../generated/graphql";
+import { createContext, useContext, useReducer } from "react";
 
 interface User {
   username: string;
@@ -33,6 +32,11 @@ const DispatchContext = createContext({} as IContext);
 
 const reducer = (state: State, { type, payload }: Action) => {
   switch (type) {
+    case "REAUTHENTICATED": 
+      return {
+        ...state,
+        authenticated: true
+      }
     case "LOGIN":
       return {
         ...state,
@@ -49,7 +53,6 @@ const reducer = (state: State, { type, payload }: Action) => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [me, { data }] = useMeLazyQuery();
   const [state, defaultDispatch] = useReducer(reducer, {
     user: null,
     authenticated: false,
@@ -58,22 +61,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const dispatch = (type: string, payload?: any) =>
     defaultDispatch({ type, payload });
-
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        me();
-        if (data?.me) {
-          dispatch("LOGIN", data);
-        }
-      } catch (err) {
-        console.log(err);
-      } finally {
-        dispatch("STOP_LOADING");
-      }
-    }
-    loadUser();
-  }, [me, data]);
 
   return (
     <DispatchContext.Provider value={dispatch}>

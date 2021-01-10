@@ -49,9 +49,8 @@ const Dashboard = () => {
       <div className="px-8 py-8 flex justify-center fill-screen-height mx-auto">
         <div className="w-full container">
           <ResponsiveGridLayout
-            // isResizable={false}
+            isResizable={false}
             // isDraggable={false}
-            // width={"100%"}
             isBounded={true}
             style={{ minWidth: "100%" }}
             className="layout"

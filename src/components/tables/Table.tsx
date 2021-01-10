@@ -28,10 +28,20 @@ interface TableProps {
   loading?: boolean;
   pageCount: number;
   search: string;
+  pageData?: PageData
+  after: string | undefined;
+  before: string | undefined;
+}
+
+type PageData = {
+    endCursor: string;
+    startCursor: string;
+    hasNextPage: string;
+    hasPreviousPage: string;
 }
 
 const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
-  const { columns, data, onFetchData, useControlledState, search } = props;
+  const { columns, data, onFetchData, useControlledState, search, after, before } = props;
 
   const {
     getTableProps,
@@ -40,7 +50,7 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     prepareRow,
     rows,
     selectedFlatRows,
-    state: { selectedRowIds, sortBy, pageIndex, pageSize },
+    state: { selectedRowIds, sortBy, pageIndex, pageSize=5 },
   } = useTable(
     {
       columns,
@@ -86,9 +96,9 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     if (sortBy.length > 0 && sortBy[0].desc === true) {
       sortDirection = "DESC";
     }
-    onFetchData({ variables: { pageIndex, pageSize, sortDirection, search } });
-    console.log(search);
-  }, [onFetchData, pageIndex, pageSize, sortBy, search]);
+    onFetchData({ variables: { pageIndex, pageSize, sortDirection, search, after, before} });
+  }, [onFetchData, pageIndex, pageSize, sortBy, search, after, before]);
+
 
   return (
     <>

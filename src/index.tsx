@@ -1,6 +1,7 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Router } from "react-router-dom";
 import ReactDOM from "react-dom";
+import history from "./history";
 import App from "./App";
 import "./assets/main.css";
 import reportWebVitals from "./reportWebVitals";
@@ -12,6 +13,7 @@ import {
   createHttpLink,
   from,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import { AuthProvider } from "./context/auth";
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import { setContext } from "@apollo/client/link/context";
@@ -73,8 +75,21 @@ const tokenRefreshLink = new TokenRefreshLink({
   },
 });
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.map(({ message, locations, path }) => {
+      if (message === "Unauthenticated!") {
+        history.push("/auth/clear");
+      }
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      );
+    });
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+
 const client = new ApolloClient({
-  link: from([tokenRefreshLink, authLink, httpLink]),
+  link: from([tokenRefreshLink, authLink, errorLink, httpLink]),
   cache: new InMemoryCache(),
 });
 
@@ -82,7 +97,7 @@ ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <AuthProvider>
-        <Router>
+        <Router history={history}>
           <App />
         </Router>
       </AuthProvider>

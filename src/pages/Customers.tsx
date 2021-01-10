@@ -14,16 +14,21 @@ interface Props {}
 
 const Customers = (props: Props) => {
   const router = useRouter();
-  const [getCustomers, { loading, data }] = useGetCustomersTableLazyQuery({fetchPolicy: "network-only"});
+  const [getCustomers, { loading, data }] = useGetCustomersTableLazyQuery({
+    fetchPolicy: "network-only",
+  });
   const [controlledPageIndex, setControlledPage] = React.useState(0);
   const [searchText, setSearchText] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [after, setAfter] = React.useState<string | undefined>();
+  const [before, setBefore] = React.useState<string | undefined>();
   const tableData = data?.customers.edges.map((edge) => {
     return {
-      name: `${edge?.node.firstName} ${edge?.node.lastName}`,
       ...edge?.node,
     };
   });
+
+  const pageData = data?.customers.pageInfo;
 
   useDebounce(
     () => {
@@ -111,9 +116,11 @@ const Customers = (props: Props) => {
         <Pagination
           firstValue={1}
           lastValue={20}
-          total={1240}
-          canNextPage={true}
-          canPreviousPage={false}
+          total={data?.customers.totalCount}
+          canNextPage={pageData?.hasNextPage}
+          canPreviousPage={pageData?.hasPreviousPage}
+          onPageForward={() => {setAfter(pageData?.endCursor)}}
+          onPageBack={() => {setBefore(pageData?.startCursor)}}
         />
       </PageHeader>
       <div className="w-full px-8 py-8 flex justify-center">
@@ -125,6 +132,8 @@ const Customers = (props: Props) => {
             onFetchData={getCustomers}
             useControlledState={useControlledState}
             search={searchQuery}
+            after={after}
+            before={before}
           />
         </div>
       </div>

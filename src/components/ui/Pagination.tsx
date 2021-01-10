@@ -5,9 +5,11 @@ import Icon from "./Icon";
 interface Props {
   firstValue: number;
   lastValue: number;
-  total: number;
-  canNextPage: boolean;
-  canPreviousPage: boolean;
+  total: number | undefined;
+  canNextPage: boolean | undefined;
+  canPreviousPage: boolean | undefined;
+  onPageForward: React.MouseEventHandler<HTMLButtonElement>;
+  onPageBack: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Pagination = ({
@@ -16,14 +18,20 @@ const Pagination = ({
   total,
   canNextPage,
   canPreviousPage,
+  onPageForward,
+  onPageBack
 }: Props) => {
   return (
     <div>
       <span className="textstyle-body text-gray-60 mr-2">{`${firstValue}-${lastValue} of ${total}`}</span>
-      <Button variant="icon-secondary" disabled={!canPreviousPage} >
+      <Button variant="icon-secondary" disabled={!canPreviousPage} onClick={onPageBack}>
         <Icon icon="pagerPrevious" />
       </Button>
-      <Button variant="icon-secondary" disabled={!canNextPage}>
+      <Button
+        variant="icon-secondary"
+        disabled={!canNextPage}
+        onClick={onPageForward}
+      >
         <Icon icon="pagerNext" />
       </Button>
     </div>

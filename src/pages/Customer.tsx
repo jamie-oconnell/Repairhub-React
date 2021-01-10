@@ -7,11 +7,19 @@ import Tab from "../components/ui/Tab";
 import Tabs from "../components/ui/Tabs";
 import useRouter from "../hooks/router";
 import Divider from "../components/ui/Divider";
+import { useGetCustomerQuery } from "../generated/graphql";
+import { RouteComponentProps } from "react-router-dom";
 
-interface Props {}
+interface Props extends RouteComponentProps<RouterProps> {}
 
-const Customer = (props: Props) => {
+type RouterProps = {
+  id: string;
+};
+
+const Customer = ({ match }: Props) => {
   const router = useRouter();
+  const id = match.params.id;
+  const { data } = useGetCustomerQuery({ variables: { id } });
   const [active, setActive] = useState(0);
   const changeTab = (e: MouseEvent<HTMLButtonElement>) => {
     const index = parseInt((e.target as HTMLButtonElement).id, 0);
@@ -28,7 +36,7 @@ const Customer = (props: Props) => {
       router.push("/customers");
     }
   };
-  
+
   return (
     <>
       <PageHeader>
@@ -36,7 +44,7 @@ const Customer = (props: Props) => {
           <Button variant="icon-text" onClick={onBack}>
             <Icon icon="back" />
           </Button>
-          <div className="flex-1 ml-2">James Ford</div>
+          <div className="flex-1 ml-2">{data?.customer?.name}</div>
           <Button variant="secondary">Edit Customer</Button>
         </div>
       </PageHeader>
@@ -87,21 +95,25 @@ const Customer = (props: Props) => {
                       <div className="textstyle-body text-gray-60">
                         Customer Name
                       </div>
-                      <div className="mt-1 textstyle-body">James Ford</div>
+                      <div className="mt-1 textstyle-body">
+                        {data?.customer?.name}
+                      </div>
                     </div>
                   </div>
                   <div className="py-4">
                     <div className="textstyle-body text-gray-60">
                       Phone Number
                     </div>
-                    <div className="mt-1 textstyle-body">(505) 555-0125</div>
+                    <div className="mt-1 textstyle-body">
+                      {data?.customer?.phoneNumber}
+                    </div>
                   </div>
                   <div className="py-4">
                     <div className="textstyle-body text-gray-60">
                       Email Address
                     </div>
                     <div className="mt-1 textstyle-body">
-                      j.ford@example.com
+                      {data?.customer?.email}
                     </div>
                   </div>
                 </div>
@@ -121,13 +133,17 @@ const Customer = (props: Props) => {
                     <div className="textstyle-body text-gray-60">
                       Business Name
                     </div>
-                    <div className="mt-1 textstyle-body">James Print Shop</div>
+                    <div className="mt-1 textstyle-body">
+                      {data?.customer?.businessName}
+                    </div>
                   </div>
                   <div className="py-4">
                     <div className="textstyle-body text-gray-60">
                       Alternative Phone Number
                     </div>
-                    <div className="mt-1 textstyle-body">(303) 555-0105</div>
+                    <div className="mt-1 textstyle-body">
+                      {data?.customer?.alternatePhoneNumber}
+                    </div>
                   </div>
                   <div className="py-4">
                     <div className="textstyle-body text-gray-60">
@@ -145,7 +161,7 @@ const Customer = (props: Props) => {
                   <div className="py-4">
                     <div className="textstyle-body text-gray-60">Address</div>
                     <div className="mt-1 textstyle-body">
-                      4228 Homestead Rd Cedar Hill
+                      {data?.customer?.addressData?.address1}
                     </div>
                   </div>
                 </div>

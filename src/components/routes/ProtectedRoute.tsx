@@ -1,25 +1,57 @@
-import { ReactNode } from "react";
-import { Route, Redirect } from "react-router-dom";
+// import { ReactNode } from "react";
+// import { Route, Redirect } from "react-router-dom";
+// import { useAuthState } from "../../context/auth";
+
+// interface Props {
+//   children: ReactNode;
+//   [x: string]: any;
+// }
+
+// const ProtectedRoute = ({ children, ...rest }: Props) => {
+//   const { authenticated } = useAuthState();
+//   return (
+//     <Route
+//       {...rest}
+//       render={({ location }) =>
+//         authenticated === true ? (
+//           children
+//         ) : (
+//           <Redirect
+//             to={{
+//               pathname: "/login",
+//               state: { from: location },
+//             }}
+//           />
+//         )
+//       }
+//     />
+//   );
+// };
+
+// export default ProtectedRoute;
+
+import { Route, Redirect, RouteProps } from "react-router-dom";
 import { useAuthState } from "../../context/auth";
 
-interface Props {
-  children: ReactNode;
-  [x: string]: any;
+interface PrivateRouteProps extends RouteProps {
+  component: any;
 }
 
-const ProtectedRoute = ({ children, ...rest }: Props) => {
+const PrivateRoute = (props: PrivateRouteProps) => {
+  const { component: Component, ...rest } = props;
   const { authenticated } = useAuthState();
+
   return (
     <Route
       {...rest}
-      render={({ location }) =>
+      render={(routeProps) =>
         authenticated === true ? (
-          children
+          <Component {...routeProps} />
         ) : (
           <Redirect
             to={{
               pathname: "/login",
-              state: { from: location },
+              state: { from: routeProps.location },
             }}
           />
         )
@@ -28,4 +60,4 @@ const ProtectedRoute = ({ children, ...rest }: Props) => {
   );
 };
 
-export default ProtectedRoute;
+export default PrivateRoute;
