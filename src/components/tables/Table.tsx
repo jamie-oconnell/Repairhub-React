@@ -1,12 +1,5 @@
-import React from "react";
-import {
-  useTable,
-  Column,
-  useSortBy,
-  useRowSelect,
-  UseTableOptions,
-  TableState,
-} from "react-table";
+import React, { ReactNode } from "react";
+import { useTable, Column, useSortBy, useRowSelect } from "react-table";
 import {
   Table as TableUI,
   Body as TableBodyUI,
@@ -16,32 +9,44 @@ import {
   Row as TableRowUI,
 } from "../ui/table";
 import Icon from "../ui/Icon";
-//@ts-ignore
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
 interface TableProps {
   columns: Column<object>[];
   data: any[] | null | undefined;
   onFetchData: Function;
+  onRowSelect: Function;
   useControlledState: any;
   pagination?: boolean;
   loading?: boolean;
   pageCount: number;
   search: string;
-  pageData?: PageData
+  pageData?: PageData;
   after: string | undefined;
   before: string | undefined;
+  noResults: ReactNode;
 }
 
 type PageData = {
-    endCursor: string;
-    startCursor: string;
-    hasNextPage: string;
-    hasPreviousPage: string;
-}
+  endCursor: string;
+  startCursor: string;
+  hasNextPage: string;
+  hasPreviousPage: string;
+};
 
 const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
-  const { columns, data, onFetchData, useControlledState, search, after, before } = props;
+  const {
+    columns,
+    data,
+    onFetchData,
+    useControlledState,
+    search,
+    after,
+    before,
+    onRowSelect,
+    loading,
+    noResults,
+  } = props;
 
   const {
     getTableProps,
@@ -50,7 +55,7 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     prepareRow,
     rows,
     selectedFlatRows,
-    state: { selectedRowIds, sortBy, pageIndex, pageSize=5 },
+    state: { selectedRowIds, sortBy, pageIndex, pageSize = 5 },
   } = useTable(
     {
       columns,
@@ -96,9 +101,15 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     if (sortBy.length > 0 && sortBy[0].desc === true) {
       sortDirection = "DESC";
     }
-    onFetchData({ variables: { pageIndex, pageSize, sortDirection, search, after, before} });
+    onFetchData({
+      variables: { pageIndex, pageSize, sortDirection, search, after, before },
+    });
   }, [onFetchData, pageIndex, pageSize, sortBy, search, after, before]);
 
+  React.useEffect(() => {
+    console.log("USING TABLE EFFECT");
+    onRowSelect(selectedRowIds);
+  }, [selectedRowIds]);
 
   return (
     <>
@@ -128,25 +139,31 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
           ))}
         </TableHeadUI>
         <TableBodyUI {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRowUI {...row.getRowProps()} isSelected={row.isSelected}>
-                {row.cells.map((cell) => {
-                  return (
-                    <TableCellUI
-                      {...cell.getCellProps()}
-                      key={String(cell.column?.id)}
-                    >
-                      <span className="flex items-center">
-                        {cell.render("Cell")}
-                      </span>
-                    </TableCellUI>
-                  );
-                })}
-              </TableRowUI>
-            );
-          })}
+          {data?.length === 0 ? (
+            <TableRowUI>
+              <TableCellUI colSpan={columns.length + 1}>{noResults}</TableCellUI>
+            </TableRowUI>
+          ) : (
+            rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <TableRowUI {...row.getRowProps()} isSelected={row.isSelected}>
+                  {row.cells.map((cell) => {
+                    return (
+                      <TableCellUI
+                        {...cell.getCellProps()}
+                        key={String(cell.column?.id)}
+                      >
+                        <span className="flex items-center">
+                          {cell.render("Cell")}
+                        </span>
+                      </TableCellUI>
+                    );
+                  })}
+                </TableRowUI>
+              );
+            })
+          )}
         </TableBodyUI>
       </TableUI>
       <pre>

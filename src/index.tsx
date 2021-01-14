@@ -77,7 +77,7 @@ const tokenRefreshLink = new TokenRefreshLink({
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
-    graphQLErrors.map(({ message, locations, path }) => {
+    graphQLErrors.forEach(({ message, locations, path }) => {
       if (message === "Unauthenticated!") {
         history.push("/auth/clear");
       }

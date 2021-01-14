@@ -9,15 +9,16 @@ import { Link } from "react-router-dom";
 import { useGetCustomersTableLazyQuery } from "../generated/graphql";
 import Pagination from "../components/ui/Pagination";
 import { useDebounce } from "react-use";
+import NoCustomers from "../components/ui/no-results/NoCustomers";
 
 interface Props {}
 
 const Customers = (props: Props) => {
   const router = useRouter();
-  const [getCustomers, { loading, data }] = useGetCustomersTableLazyQuery({
-    fetchPolicy: "network-only",
-  });
-  const [controlledPageIndex, setControlledPage] = React.useState(0);
+  const [getCustomers, { loading, data }] = useGetCustomersTableLazyQuery();
+  const [controlledSelectedRows, setcontrolledSelectedRows] = React.useState(
+    {}
+  );
   const [searchText, setSearchText] = React.useState("");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [after, setAfter] = React.useState<string | undefined>();
@@ -42,11 +43,21 @@ const Customers = (props: Props) => {
     return React.useMemo(
       () => ({
         ...state,
-        pageIndex: controlledPageIndex,
+        ...controlledSelectedRows,
       }),
       [state]
     );
   };
+
+  const onRowSelect = React.useCallback(
+    (rows, instance) => {
+      console.log(rows);
+      // setcontrolledSelectedRows({
+      //   selectedRowIds: rows,
+      // });
+    },
+    [setcontrolledSelectedRows]
+  );
 
   const columns = React.useMemo(
     () => [
@@ -88,7 +99,12 @@ const Customers = (props: Props) => {
   return (
     <>
       <PageHeader>
-        <span className="textstyle-header flex-1">Customers</span>
+        <span className="textstyle-header flex-1">
+          {Object.keys(controlledSelectedRows).length === 0
+            ? "Customers"
+            : `${Object.keys(controlledSelectedRows).length} Customers`}
+          {console.log(Object.keys(controlledSelectedRows).length)}
+        </span>
         <Button variant="secondary">Import Customers</Button>
         <Button
           onClick={(e) => router.push("/customers/create")}
@@ -119,8 +135,12 @@ const Customers = (props: Props) => {
           total={data?.customers.totalCount}
           canNextPage={pageData?.hasNextPage}
           canPreviousPage={pageData?.hasPreviousPage}
-          onPageForward={() => {setAfter(pageData?.endCursor)}}
-          onPageBack={() => {setBefore(pageData?.startCursor)}}
+          onPageForward={() => {
+            setAfter(pageData?.endCursor);
+          }}
+          onPageBack={() => {
+            setBefore(pageData?.startCursor);
+          }}
         />
       </PageHeader>
       <div className="w-full px-8 py-8 flex justify-center">
@@ -134,6 +154,9 @@ const Customers = (props: Props) => {
             search={searchQuery}
             after={after}
             before={before}
+            onRowSelect={onRowSelect}
+            loading={loading}
+            noResults={<NoCustomers />}
           />
         </div>
       </div>
