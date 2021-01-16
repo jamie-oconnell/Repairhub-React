@@ -6,29 +6,66 @@ import TextInput from "../components/ui/TextInput";
 import Textarea from "../components/ui/Textarea";
 import Icon from "../components/ui/Icon";
 import useRouter from "../hooks/router";
-import AddressAutocomplete from "../components/ui/AddressAutocomplete"
+import AddressAutocomplete from "../components/ui/AddressAutocomplete";
+import { useCreateCustomerMutation } from "../generated/graphql";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 interface Props {}
 
+const validationSchema = yup.object().shape({
+  firstName: yup.string(),
+  lastName: yup.string(),
+});
+
 const CreateCustomer = (props: Props) => {
   const router = useRouter();
+  const [createCustomer, { error }] = useCreateCustomerMutation();
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async ({ firstName, lastName }) => {
+      const response = await createCustomer({
+        variables: {
+          firstName,
+          lastName,
+        },
+      });
+
+      console.log(response);
+    },
+  });
+
   return (
     <>
       <PageHeader>
         <div className="container flex items-center">
-          <Button className="mr-2" variant="icon-text" onClick={(e) => router.push("/customers")}>
+          <Button
+            className="mr-2"
+            variant="icon-text"
+            onClick={(e) => router.push("/customers")}
+          >
             <Icon icon="back" />
           </Button>
           <span className="flex-1">Create Customer</span>
           <Button variant="secondary">Discard</Button>
-          <Button variant="primary" className="ml-2">
+          <Button
+            variant="primary"
+            className="ml-2"
+            onClick={() => formik.handleSubmit()}
+            type="submit"
+          >
             Create Customer
           </Button>
         </div>
       </PageHeader>
       <div className="bg-white flex w-full justify-center fill-screen-height">
         <div className="container flex justify-center">
-          <div style={{ maxWidth: "732px" }} className={`px-8 lg:px-0`}>
+          <form style={{ maxWidth: "732px" }} className={`px-8 lg:px-0`}>
             <div className="grid grid-cols-1 sm:grid-cols-2 py-8">
               <div>
                 <div className="textstyle-emphasisedbody">
@@ -45,9 +82,11 @@ const CreateCustomer = (props: Props) => {
                       First Name
                     </label>
                     <TextInput
-                      id="first-name"
+                      id="firstName"
                       placeholder="First Name"
                       className="mt-2"
+                      value={formik.values.firstName}
+                      onChange={formik.handleChange}
                     />
                   </div>
                   <div>
@@ -55,9 +94,11 @@ const CreateCustomer = (props: Props) => {
                       Last Name
                     </label>
                     <TextInput
-                      id="last-name"
+                      id="lastName"
                       className="mt-2"
                       placeholder="Last Name"
+                      value={formik.values.lastName}
+                      onChange={formik.handleChange}
                     />
                   </div>
                 </div>
@@ -145,10 +186,10 @@ const CreateCustomer = (props: Props) => {
                   />
                 </div>
                 <Button variant="text">Enter Address Manually</Button>
-                <AddressAutocomplete /> 
+                <AddressAutocomplete />
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

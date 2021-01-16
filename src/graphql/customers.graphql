@@ -53,3 +53,28 @@ query GetCustomer($id: String) {
     updatedAt
   }
 }
+
+mutation CreateCustomer(
+  $firstName: String
+  $lastName: String
+  $email: String
+  $phoneNumber: String
+  $alternatePhoneNumber: String
+  $businessName: String
+  $notes: String
+) {
+  addEditCustomer(
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    phoneNumber: $phoneNumber
+    alternatePhoneNumber: $alternatePhoneNumber
+    businessName: $businessName
+    notes: $notes
+    # address: { city: "", country: "", address1: "", address2: "", postal: "" }
+    notificationSms: true
+    notificationEmail: true
+  ) {
+    id
+  }
+}

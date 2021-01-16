@@ -3,8 +3,7 @@ import Button from "./Button";
 import Icon from "./Icon";
 
 interface Props {
-  firstValue: number;
-  lastValue: number;
+  pageSize: number | undefined;
   total: number | undefined;
   canNextPage: boolean | undefined;
   canPreviousPage: boolean | undefined;
@@ -13,18 +12,21 @@ interface Props {
 }
 
 const Pagination = ({
-  firstValue,
-  lastValue,
+  pageSize,
   total,
   canNextPage,
   canPreviousPage,
   onPageForward,
-  onPageBack
+  onPageBack,
 }: Props) => {
   return (
     <div>
-      <span className="textstyle-body text-gray-60 mr-2">{`${firstValue}-${lastValue} of ${total}`}</span>
-      <Button variant="icon-secondary" disabled={!canPreviousPage} onClick={onPageBack}>
+      <span className="textstyle-body text-gray-60 mr-2">{`Showing ${pageSize} of ${total}`}</span>
+      <Button
+        variant="icon-secondary"
+        disabled={!canPreviousPage}
+        onClick={onPageBack}
+      >
         <Icon icon="pagerPrevious" />
       </Button>
       <Button

@@ -447,5 +447,6 @@
   .react-grid-item.react-draggable-dragging {
     @apply border border-oceanBlue;
     @apply cursor-move;
+    @apply opacity-30;
   }
 }

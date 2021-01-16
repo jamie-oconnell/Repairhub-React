@@ -16,10 +16,9 @@ interface Props {}
 const Customers = (props: Props) => {
   const router = useRouter();
   const [getCustomers, { loading, data }] = useGetCustomersTableLazyQuery();
-  const [controlledSelectedRows, setcontrolledSelectedRows] = React.useState(
-    {}
-  );
+  const [selectedRows, setSelectedRows] = React.useState({});
   const [searchText, setSearchText] = React.useState("");
+  const [allRowsSelected, setAllRowsSelected] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [after, setAfter] = React.useState<string | undefined>();
   const [before, setBefore] = React.useState<string | undefined>();
@@ -28,7 +27,7 @@ const Customers = (props: Props) => {
       ...edge?.node,
     };
   });
-
+  const selectedLength = Object.keys(selectedRows).length;
   const pageData = data?.customers.pageInfo;
 
   useDebounce(
@@ -39,25 +38,10 @@ const Customers = (props: Props) => {
     [searchText]
   );
 
-  const useControlledState = (state: any) => {
-    return React.useMemo(
-      () => ({
-        ...state,
-        ...controlledSelectedRows,
-      }),
-      [state]
-    );
+  const clearSelected = () => {
+    setAllRowsSelected(false);
+    setSelectedRows({});
   };
-
-  const onRowSelect = React.useCallback(
-    (rows, instance) => {
-      console.log(rows);
-      // setcontrolledSelectedRows({
-      //   selectedRowIds: rows,
-      // });
-    },
-    [setcontrolledSelectedRows]
-  );
 
   const columns = React.useMemo(
     () => [
@@ -99,20 +83,42 @@ const Customers = (props: Props) => {
   return (
     <>
       <PageHeader>
-        <span className="textstyle-header flex-1">
-          {Object.keys(controlledSelectedRows).length === 0
-            ? "Customers"
-            : `${Object.keys(controlledSelectedRows).length} Customers`}
-          {console.log(Object.keys(controlledSelectedRows).length)}
-        </span>
-        <Button variant="secondary">Import Customers</Button>
-        <Button
-          onClick={(e) => router.push("/customers/create")}
-          variant="primary"
-          className="ml-2"
-        >
-          Create Customer
-        </Button>
+        <div className="flex-1">
+          <span className="textstyle-header">
+            {selectedLength === 0 ? "Customers" : `${selectedLength} Customers`}
+          </span>
+          {selectedLength !== 0 && (
+            <>
+              <Button
+                className="ml-8"
+                variant="text"
+                onClick={() => setAllRowsSelected(true)}
+              >{`Select All (${data?.customers.totalCount})`}</Button>
+              <Button className="ml-8" variant="text" onClick={clearSelected}>
+                Deselect All
+              </Button>
+            </>
+          )}
+        </div>
+
+        {selectedLength === 0 ? (
+          <Button variant="secondary">Import Customers</Button>
+        ) : (
+          <Button variant="secondary">Delete</Button>
+        )}
+        {selectedLength === 0 ? (
+          <Button
+            onClick={(e) => router.push("/customers/create")}
+            variant="primary"
+            className="ml-2"
+          >
+            Create Customer
+          </Button>
+        ) : (
+          <Button variant="primary" className="ml-2">
+            Export
+          </Button>
+        )}
       </PageHeader>
       <PageHeader>
         <div className="flex-1 flex">
@@ -130,8 +136,7 @@ const Customers = (props: Props) => {
           </Button>
         </div>
         <Pagination
-          firstValue={1}
-          lastValue={20}
+          pageSize={data?.customers.edges.length}
           total={data?.customers.totalCount}
           canNextPage={pageData?.hasNextPage}
           canPreviousPage={pageData?.hasPreviousPage}
@@ -146,17 +151,17 @@ const Customers = (props: Props) => {
       <div className="w-full px-8 py-8 flex justify-center">
         <div className="container">
           <CustomersTable
-            pageCount={10}
             columns={columns}
             data={tableData}
             onFetchData={getCustomers}
-            useControlledState={useControlledState}
             search={searchQuery}
             after={after}
             before={before}
-            onRowSelect={onRowSelect}
             loading={loading}
             noResults={<NoCustomers />}
+            selectedRows={selectedRows}
+            onSelectedRowsChange={setSelectedRows}
+            allRowsSelected={allRowsSelected}
           />
         </div>
       </div>

@@ -1,5 +1,11 @@
 import React, { ReactNode } from "react";
-import { useTable, Column, useSortBy, useRowSelect } from "react-table";
+import {
+  useTable,
+  Column,
+  useSortBy,
+  useRowSelect,
+  useMountedLayoutEffect,
+} from "react-table";
 import {
   Table as TableUI,
   Body as TableBodyUI,
@@ -15,16 +21,16 @@ interface TableProps {
   columns: Column<object>[];
   data: any[] | null | undefined;
   onFetchData: Function;
-  onRowSelect: Function;
-  useControlledState: any;
+  onSelectedRowsChange: Function;
+  selectedRows: any;
   pagination?: boolean;
   loading?: boolean;
-  pageCount: number;
   search: string;
   pageData?: PageData;
   after: string | undefined;
   before: string | undefined;
   noResults: ReactNode;
+  allRowsSelected? : boolean;
 }
 
 type PageData = {
@@ -39,13 +45,14 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     columns,
     data,
     onFetchData,
-    useControlledState,
     search,
     after,
     before,
-    onRowSelect,
     loading,
     noResults,
+    selectedRows,
+    onSelectedRowsChange,
+    allRowsSelected
   } = props;
 
   const {
@@ -54,8 +61,9 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     headerGroups,
     prepareRow,
     rows,
-    selectedFlatRows,
-    state: { selectedRowIds, sortBy, pageIndex, pageSize = 5 },
+    toggleAllRowsSelected,
+    // selectedFlatRows,
+    state: { selectedRowIds, sortBy, pageSize = 5 },
   } = useTable(
     {
       columns,
@@ -63,7 +71,9 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
       manualSortBy: true,
       autoResetSortBy: false,
       disableMultiSort: true,
-      useControlledState,
+      initialState: {
+        selectedRowIds: selectedRows,
+      },
     },
     useSortBy,
     (hooks) => {
@@ -95,92 +105,78 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     useRowSelect
   );
 
+  useMountedLayoutEffect(() => {
+    onSelectedRowsChange && onSelectedRowsChange(selectedRowIds);
+  }, [onSelectedRowsChange, selectedRowIds]);
+
   // Update data on table state change
   React.useEffect(() => {
-    let sortDirection = "ASC";
+    let sortDirection = "DESC";
     if (sortBy.length > 0 && sortBy[0].desc === true) {
-      sortDirection = "DESC";
+      sortDirection = "ASC";
     }
     onFetchData({
-      variables: { pageIndex, pageSize, sortDirection, search, after, before },
+      variables: { pageSize, sortDirection, search, after, before },
     });
-  }, [onFetchData, pageIndex, pageSize, sortBy, search, after, before]);
+  }, [onFetchData, pageSize, sortBy, search, after, before]);
+
 
   React.useEffect(() => {
-    console.log("USING TABLE EFFECT");
-    onRowSelect(selectedRowIds);
-  }, [selectedRowIds]);
+    toggleAllRowsSelected(allRowsSelected)
+  }, [allRowsSelected])
 
   return (
-    <>
-      <TableUI {...getTableProps()}>
-        <TableHeadUI>
-          {headerGroups.map((headerGroup) => (
-            <TableRowUI
-              {...headerGroup.getHeaderGroupProps()}
-              key={String(headerGroup.id)}
-            >
-              {headerGroup.headers.map((column) => (
-                <TableHeaderUI
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  key={String(column.id)}
-                >
-                  <span>{column.render("Header")}</span>
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                </TableHeaderUI>
-              ))}
-            </TableRowUI>
-          ))}
-        </TableHeadUI>
-        <TableBodyUI {...getTableBodyProps()}>
-          {data?.length === 0 ? (
-            <TableRowUI>
-              <TableCellUI colSpan={columns.length + 1}>{noResults}</TableCellUI>
-            </TableRowUI>
-          ) : (
-            rows.map((row, i) => {
-              prepareRow(row);
-              return (
-                <TableRowUI {...row.getRowProps()} isSelected={row.isSelected}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <TableCellUI
-                        {...cell.getCellProps()}
-                        key={String(cell.column?.id)}
-                      >
-                        <span className="flex items-center">
-                          {cell.render("Cell")}
-                        </span>
-                      </TableCellUI>
-                    );
-                  })}
-                </TableRowUI>
-              );
-            })
-          )}
-        </TableBodyUI>
-      </TableUI>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              selectedRowIds: selectedRowIds,
-              "selectedFlatRows[].original": selectedFlatRows.map(
-                (d) => d.original
-              ),
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
-    </>
+    <TableUI {...getTableProps()}>
+      <TableHeadUI>
+        {headerGroups.map((headerGroup) => (
+          <TableRowUI
+            {...headerGroup.getHeaderGroupProps()}
+            key={String(headerGroup.id)}
+          >
+            {headerGroup.headers.map((column) => (
+              <TableHeaderUI
+                {...column.getHeaderProps(column.getSortByToggleProps())}
+                key={String(column.id)}
+              >
+                <span>{column.render("Header")}</span>
+                <span>
+                  {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
+                </span>
+              </TableHeaderUI>
+            ))}
+          </TableRowUI>
+        ))}
+      </TableHeadUI>
+      <TableBodyUI {...getTableBodyProps()}>
+        {data?.length === 0 ? (
+          <TableRowUI>
+            <TableCellUI colSpan={columns.length + 1}>
+              {loading ? "LOADING" : noResults}
+            </TableCellUI>
+          </TableRowUI>
+        ) : (
+          rows.map((row, i) => {
+            prepareRow(row);
+            return (
+              <TableRowUI {...row.getRowProps()} isSelected={row.isSelected}>
+                {row.cells.map((cell) => {
+                  return (
+                    <TableCellUI
+                      {...cell.getCellProps()}
+                      key={String(cell.column?.id)}
+                    >
+                      <span className="flex items-center">
+                        {cell.render("Cell")}
+                      </span>
+                    </TableCellUI>
+                  );
+                })}
+              </TableRowUI>
+            );
+          })
+        )}
+      </TableBodyUI>
+    </TableUI>
   );
 };
 
