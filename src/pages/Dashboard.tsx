@@ -61,12 +61,12 @@ const Dashboard = () => {
             breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
             cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
           >
-            <Widget key="1" updateWidget={updateWidget}></Widget>
-            <Widget key="2"></Widget>
-            <Widget key="3"></Widget>
-            <Widget key="4"></Widget>
-            <Widget key="5"></Widget>
-            <Widget key="6"></Widget>
+            <Widget key="1" i="1" updateWidget={updateWidget}></Widget>
+            <Widget key="2" i="2" updateWidget={updateWidget}></Widget>
+            <Widget key="3" i="3" updateWidget={updateWidget}></Widget>
+            <Widget key="4" i="4" updateWidget={updateWidget}></Widget>
+            <Widget key="5" i="5" updateWidget={updateWidget}></Widget>
+            <Widget key="6" i="6" updateWidget={updateWidget}></Widget>
           </ResponsiveGridLayout>
         </div>
       </div>

@@ -6,7 +6,7 @@ import Icon from "../Icon";
 
 interface Props {
   className?: string;
-  key?: string;
+  i?: string;
   style?: { [x: string]: string };
   children?: ReactNode[] | string;
   updateWidget?: Function;
@@ -17,6 +17,7 @@ const Widget = ({
   style = {},
   children,
   updateWidget,
+  i,
   ...rest
 }: Props) => {
   return (
@@ -33,19 +34,19 @@ const Widget = ({
         <div>
           <Button
             variant="icon-text"
-            onClick={() => updateWidget && updateWidget("1", "small")}
+            onClick={() => updateWidget && updateWidget(i, "small")}
           >
             <Icon icon="smallBlock" />
           </Button>
           <Button
             variant="icon-text"
-            onClick={() => updateWidget && updateWidget("1", "medium")}
+            onClick={() => updateWidget && updateWidget(i, "medium")}
           >
             <Icon icon="mediumBlock" />
           </Button>
           <Button
             variant="icon-text"
-            onClick={() => updateWidget && updateWidget("1", "large")}
+            onClick={() => updateWidget && updateWidget(i, "large")}
           >
             <Icon icon="largeBlock" />
           </Button>
