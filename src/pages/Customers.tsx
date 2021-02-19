@@ -10,6 +10,7 @@ import { useGetCustomersTableLazyQuery } from "../generated/graphql";
 import Pagination from "../components/ui/Pagination";
 import { useDebounce } from "react-use";
 import NoCustomers from "../components/ui/no-results/NoCustomers";
+import Filters from "../components/ui/Filters";
 
 interface Props {}
 
@@ -23,6 +24,12 @@ const Customers = (props: Props) => {
   const [after, setAfter] = React.useState<string | undefined>();
   const [before, setBefore] = React.useState<string | undefined>();
   const [catalog, setCatalog] = React.useState<string[] | undefined>();
+
+  //Filter values
+  const [isClosed, setIsClosed] = React.useState(false);
+  const [isCancelled, setIsCancelled] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+
   const tableData = data?.customers.edges.map((edge) => {
     return {
       ...edge?.node,
@@ -133,9 +140,14 @@ const Customers = (props: Props) => {
               setSearchText(currentTarget.value);
             }}
           ></TextInput>
-          <Button className="ml-2" variant="secondary">
-            Filters
-          </Button>
+          <Filters
+            isClosed={isClosed}
+            setIsClosed={setIsClosed}
+            isCancelled={isCancelled}
+            setIsCancelled={setIsCancelled}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
         </div>
         <Pagination
           pageSize={data?.customers.edges.length}
