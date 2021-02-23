@@ -1,51 +1,50 @@
 import React from "react"
-import Checkbox from "./Checkbox"
 import Button from "./Button"
 import TextInput from "./TextInput"
-import Icon from "./Icon";
+import { CustomerFilterInput, CreatedAtInput } from "../../generated/graphql";
 
 type Props = {
-  isClosed?: boolean;
-  isCancelled?: boolean;
-  isOpen?: boolean;
-  setIsClosed?: Function;
-  setIsCancelled?: Function;
-  setIsOpen?: Function;
+  pageName: String;
+  setFilters: Function;
 }
 
 const Filters: React.FC<Props> = (props: Props) => { 
   const {
-    isClosed,
-    setIsClosed,
-    isCancelled,
-    setIsCancelled,
-    isOpen,
-    setIsOpen
+    pageName, setFilters
   } = props;
   const [show, setShow] = React.useState(false);
-  const [statusCount, setStatusCount] = React.useState(0);
-  const itemStyle = "flex items-center px-2 py-3 w-52";
+  const [fromDate, setFromDate] = React.useState<string>("");
+  const [toDate, setToDate] = React.useState<string>("");
+  const itemStyle = "flex items-center px-2 py-3 w-52 ring-1 ring-black ring-opacity-5 shadow-sm";
 
-  const resetStatus = () => {
-    if(setIsClosed) setIsClosed(false);
-    if(setIsCancelled) setIsCancelled(false);
-    if(setIsOpen) setIsOpen(false);
+  const resetFilters = () => {
+    setFromDate("");
+    setToDate("");
+    
   }
 
   React.useEffect(() => {
-    setStatusCount(Number(isClosed) + Number(isCancelled) + Number(isOpen));
-  }, [setStatusCount, isClosed, isCancelled, isOpen]);
+    const createdAt : CreatedAtInput = {
+      gte: fromDate ? fromDate : undefined,
+      lte: toDate ? toDate : undefined
+    };
+    const filtersValue : CustomerFilterInput = {
+      field: "createdAt",
+      createdAt,
+    };
+    setFilters(filtersValue);
+  }, [fromDate, toDate, setFilters]);
 
   return (
     <div className="relative inline-block text-left">
-      <Button className={statusCount > 0 ? "ml-2 flex items-center border-blue-600 text-blue-600 w-28" : "ml-2 flex items-center w-28"} variant="secondary" onClick={() => setShow(!show)}>
-        Filters {statusCount > 0 && <p className="mx-2 w-4 bg-blue-600 text-white textstyle-label">{statusCount}</p>}
+      <Button className="ml-2 flex items-center w-28" variant="secondary" onClick={() => setShow(!show)}>
+        Filters
       </Button>
       {show &&
         <div className="origin-top-left absolute left-2 mt-2 w-auto shadow-sm bg-white ring-1 ring-black ring-opacity-5 textstyle-emphasisedbody">
           <div className="flex">
             <div className="w-56 p-2">
-              <p className="px-2 py-2">Filters</p>
+              <p className="px-2 py-2">{pageName} Filters</p>
             </div>
             <div className="w-56 p-2">
               <TextInput
@@ -56,39 +55,22 @@ const Filters: React.FC<Props> = (props: Props) => {
             </div>
           </div>
           <div className="flex">
+            <p className="px-4">CreatedAt</p>
+          </div>
+          <div className="flex">
             <div className="w-56 p-2">
               <div className={itemStyle}>
-                <Icon icon="discount" className="text-gray-60" />
-                <span className="px-2">Brand</span>
-              </div>
-              <div className={"relative text-blue-600 " + itemStyle}>
-                <Icon icon="status" />
-                <span className="px-2">Status</span>
-                <div className="flex items-center absolute right-0">
-                  {statusCount > 0 && <p>{statusCount}</p>}
-                  <Icon icon="arrowRight"/>
-                </div>
-              </div>
-              <div className={itemStyle}>
-                <Icon icon="delete" className="text-gray-60" />
-                <span className="px-2">Color</span>
+                <span className="px-2">From</span>
+                <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} max={toDate}/>
               </div>
             </div>
             <div className="w-56 p-2">
               <div className={itemStyle}>
-                <Checkbox checked={isClosed} onClick={() => {if(setIsClosed) setIsClosed(!isClosed)}} />
-                <span className="px-2">Closed</span>
+                <span className="px-2">To</span>
+                <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} min={fromDate}/>
               </div>
-              <div className={itemStyle}>
-                <Checkbox checked={isCancelled} onClick={() => {if(setIsCancelled) setIsCancelled(!isCancelled)}} />
-                <span className="px-2">Cancelled</span>
-              </div>
-              <div className={itemStyle}>
-                <Checkbox checked={isOpen} onClick={() => {if(setIsOpen) setIsOpen(!isOpen)}} />
-                <span className="px-2">Open</span>
-              </div>
-              <Button className="mt-24 text-blue-600" variant="icon-secondary" onClick={resetStatus} disabled={statusCount > 0 ? false : true}>
-                Reset Status
+              <Button className="mt-24 text-blue-600" variant="icon-secondary" onClick={resetFilters} disabled={!!fromDate || !!toDate ? false : true}>
+                Reset Filters
               </Button>
             </div>
           </div>

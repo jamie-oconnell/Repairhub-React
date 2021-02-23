@@ -16,6 +16,7 @@ import {
 } from "../ui/table";
 import Icon from "../ui/Icon";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
+import { CustomerFilterInput } from "../../generated/graphql";
 
 interface TableProps {
   columns: Column<object>[];
@@ -31,6 +32,7 @@ interface TableProps {
   before: string | undefined;
   noResults: ReactNode;
   allRowsSelected? : boolean;
+  filters?: CustomerFilterInput;
 }
 
 type PageData = {
@@ -52,7 +54,8 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
     noResults,
     selectedRows,
     onSelectedRowsChange,
-    allRowsSelected
+    allRowsSelected,
+    filters
   } = props;
 
   const {
@@ -116,9 +119,9 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
       sortDirection = "ASC";
     }
     onFetchData({
-      variables: { pageSize, sortDirection, search, after, before },
+      variables: { pageSize, sortDirection, search, after, before, filters },
     });
-  }, [onFetchData, pageSize, sortBy, search, after, before]);
+  }, [onFetchData, pageSize, sortBy, search, after, before, filters]);
 
 
   React.useEffect(() => {

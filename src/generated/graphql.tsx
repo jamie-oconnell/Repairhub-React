@@ -276,6 +276,7 @@ export type GetCustomersTableQueryVariables = Exact<{
   search?: Maybe<Scalars['String']>;
   after?: Maybe<Scalars['String']>;
   before?: Maybe<Scalars['String']>;
+  filters?: Maybe<CustomerFilterInput>;
 }>;
 
 
@@ -365,13 +366,14 @@ export type MeQuery = (
 
 
 export const GetCustomersTableDocument = gql`
-    query GetCustomersTable($pageSize: Int, $sortDirection: SortOrder, $search: String, $after: String, $before: String) {
+    query GetCustomersTable($pageSize: Int, $sortDirection: SortOrder, $search: String, $after: String, $before: String, $filters: FilterInput) {
   customers(
     first: $pageSize
     sortOrder: $sortDirection
     search: $search
     after: $after
     before: $before
+    filters: $filters
   ) {
     edges {
       cursor

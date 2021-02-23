@@ -3,7 +3,6 @@ import Button from "../components/ui/Button";
 import Checkbox from "../components/ui/Checkbox";
 import Divider from "../components/ui/Divider";
 import TextInput from "../components/ui/TextInput";
-import Textarea from "../components/ui/Textarea";
 import Icon from "../components/ui/Icon";
 import useRouter from "../hooks/router";
 import AddressAutocomplete from "../components/ui/AddressAutocomplete";
@@ -16,27 +15,50 @@ interface Props {}
 const validationSchema = yup.object().shape({
   firstName: yup.string(),
   lastName: yup.string(),
+  email: yup.string(),
+  countryCode: yup.string(),
+  phoneNumber: yup.string(),
+  alternatePhoneNumber: yup.string(),
+  businessName: yup.string(),
+  addressData: yup.object(),
+  notes: yup.string()
 });
 
 const CreateCustomer = (props: Props) => {
   const router = useRouter();
-  const [createCustomer, { error }] = useCreateCustomerMutation();
+  const [ createCustomer, { client } ] = useCreateCustomerMutation();
 
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
+      email: "",
+      countryCode: "",
+      phoneNumber: "",
+      alternatePhoneNumber: "",
+      businessName: "",
+      addressData: {},
+      notes: ""
     },
     validationSchema: validationSchema,
-    onSubmit: async ({ firstName, lastName }) => {
-      const response = await createCustomer({
+    onSubmit: async ({ firstName, lastName, email, phoneNumber, alternatePhoneNumber, businessName, notes }) => {
+      await createCustomer({
         variables: {
           firstName,
           lastName,
+          email,
+          phoneNumber,
+          alternatePhoneNumber,
+          businessName,
+          notes
         },
+      }).then(() => {
+        alert("Created a customer successfully!");
+        router.push("/customers");
+        client.resetStore();
+      }).catch((e) => {
+        alert(e);
       });
-
-      console.log(response);
     },
   });
 
@@ -106,13 +128,25 @@ const CreateCustomer = (props: Props) => {
                   <label htmlFor="phone" className="textstyle-body ">
                     Phone Number
                   </label>
-                  <TextInput id="phone" className="mt-2" placeholder="Phone" />
+                  <TextInput 
+                    id="phoneNumber" 
+                    className="mt-2" 
+                    placeholder="Phone" 
+                    value={formik.values.phoneNumber}
+                    onChange={formik.handleChange}
+                  />
                 </div>
                 <div className="py-4">
                   <label htmlFor="email" className="textstyle-body ">
                     Email
                   </label>
-                  <TextInput id="email" className="mt-2" placeholder="Email" />
+                  <TextInput 
+                    id="email" 
+                    className="mt-2" 
+                    placeholder="Email" 
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                  />
                 </div>
               </div>
             </div>
@@ -132,9 +166,11 @@ const CreateCustomer = (props: Props) => {
                     Business Name
                   </label>
                   <TextInput
-                    id="business-name"
+                    id="businessName"
                     className="mt-2"
                     placeholder="Business Name"
+                    value={formik.values.businessName}
+                    onChange={formik.handleChange}
                   />
                 </div>
                 <div className="py-4">
@@ -142,9 +178,11 @@ const CreateCustomer = (props: Props) => {
                     Alternative Phone Number
                   </label>
                   <TextInput
-                    id="alt-phone"
+                    id="alternatePhoneNumber"
                     className="mt-2"
                     placeholder="Alt Phone"
+                    value={formik.values.alternatePhoneNumber}
+                    onChange={formik.handleChange}
                   />
                 </div>
                 <div className="py-4">
@@ -172,7 +210,13 @@ const CreateCustomer = (props: Props) => {
                   <label htmlFor="notes" className="textstyle-body ">
                     Notes
                   </label>
-                  <Textarea id="notes" className="mt-2" placeholder="Notes" />
+                  <TextInput
+                    id="notes" 
+                    className="mt-2" 
+                    placeholder="Notes"
+                    value={formik.values.notes}
+                    onChange={formik.handleChange}
+                  />
                 </div>
                 <div className="py-4">
                   <label htmlFor="address" className="textstyle-body ">

@@ -12,6 +12,7 @@ import { useDebounce } from "react-use";
 import NoCustomers from "../components/ui/no-results/NoCustomers";
 import Filters from "../components/ui/Filters";
 
+
 interface Props {}
 
 const Customers = (props: Props) => {
@@ -23,12 +24,10 @@ const Customers = (props: Props) => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [after, setAfter] = React.useState<string | undefined>();
   const [before, setBefore] = React.useState<string | undefined>();
-  const [catalog, setCatalog] = React.useState<string[] | undefined>();
+  //const [catalog, setCatalog] = React.useState<string[] | undefined>();
 
   //Filter values
-  const [isClosed, setIsClosed] = React.useState(false);
-  const [isCancelled, setIsCancelled] = React.useState(false);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [filters, setFilters] = React.useState({});
 
   const tableData = data?.customers.edges.map((edge) => {
     return {
@@ -141,12 +140,8 @@ const Customers = (props: Props) => {
             }}
           ></TextInput>
           <Filters
-            isClosed={isClosed}
-            setIsClosed={setIsClosed}
-            isCancelled={isCancelled}
-            setIsCancelled={setIsCancelled}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            pageName="Customers"
+            setFilters={setFilters}
           />
         </div>
         <Pagination
@@ -169,6 +164,7 @@ const Customers = (props: Props) => {
             data={tableData}
             onFetchData={getCustomers}
             search={searchQuery}
+            filters={filters}
             after={after}
             before={before}
             loading={loading}
