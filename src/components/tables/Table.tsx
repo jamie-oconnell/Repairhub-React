@@ -119,7 +119,7 @@ const Table: React.FC<TableProps> = (props: TableProps): React.ReactElement => {
       sortDirection = "ASC";
     }
     onFetchData({
-      variables: { pageSize, sortDirection, search, after, before, filters },
+      variables: { firstCount: pageSize, sortDirection, search, after, filters },
     });
   }, [onFetchData, pageSize, sortBy, search, after, before, filters]);
 

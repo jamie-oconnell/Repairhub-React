@@ -24,6 +24,7 @@ const Customers = (props: Props) => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [after, setAfter] = React.useState<string | undefined>();
   const [before, setBefore] = React.useState<string | undefined>();
+  const [cursorArray, setCursorArray] = React.useState<(string | undefined)[]>([]);
   //const [catalog, setCatalog] = React.useState<string[] | undefined>();
 
   //Filter values
@@ -150,10 +151,14 @@ const Customers = (props: Props) => {
           canNextPage={pageData?.hasNextPage}
           canPreviousPage={pageData?.hasPreviousPage}
           onPageForward={() => {
+            if(after === undefined) setCursorArray([]);
+            setBefore(after);
             setAfter(pageData?.endCursor);
+            setCursorArray(cursorArray.indexOf(after) < 0 ? [...cursorArray, after] : cursorArray);
           }}
           onPageBack={() => {
-            setBefore(pageData?.startCursor);
+            setAfter(before);
+            setBefore(cursorArray[cursorArray.indexOf(before) - 1]);
           }}
         />
       </PageHeader>

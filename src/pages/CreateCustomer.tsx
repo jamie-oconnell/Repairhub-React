@@ -1,3 +1,4 @@
+import React from "react";
 import PageHeader from "../components/layout/PageHeader";
 import Button from "../components/ui/Button";
 import Checkbox from "../components/ui/Checkbox";
@@ -9,24 +10,29 @@ import AddressAutocomplete from "../components/ui/AddressAutocomplete";
 import { useCreateCustomerMutation } from "../generated/graphql";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import Toast from "../components/ui/Toast";
+import Tooltip from "../components/ui/Tooltip";
 
 interface Props {}
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string(),
-  lastName: yup.string(),
-  email: yup.string(),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
   countryCode: yup.string(),
-  phoneNumber: yup.string(),
-  alternatePhoneNumber: yup.string(),
-  businessName: yup.string(),
+  phoneNumber: yup.string().required('Phone number is required'),
+  alternatePhoneNumber: yup.string().required('Alt phone number is required'),
+  businessName: yup.string().required('Business name is required'),
   addressData: yup.object(),
-  notes: yup.string()
+  notes: yup.string().required('Notes is required')
 });
 
 const CreateCustomer = (props: Props) => {
   const router = useRouter();
   const [ createCustomer, { client } ] = useCreateCustomerMutation();
+  const [success, setSuccess] = React.useState(false);
+  const [isServerError, setIsServerError] = React.useState(false);
+  const [serverErrorMessage, setServerErrorMessage] = React.useState('');
 
   const formik = useFormik({
     initialValues: {
@@ -42,6 +48,7 @@ const CreateCustomer = (props: Props) => {
     },
     validationSchema: validationSchema,
     onSubmit: async ({ firstName, lastName, email, phoneNumber, alternatePhoneNumber, businessName, notes }) => {
+      setIsServerError(false);
       await createCustomer({
         variables: {
           firstName,
@@ -53,11 +60,14 @@ const CreateCustomer = (props: Props) => {
           notes
         },
       }).then(() => {
-        alert("Created a customer successfully!");
-        router.push("/customers");
-        client.resetStore();
+        setSuccess(true);
+        setTimeout(() => {
+          router.push("/customers");
+          client.resetStore();
+        }, 3000);
       }).catch((e) => {
-        alert(e);
+        setIsServerError(true);
+        setServerErrorMessage(e.toString());
       });
     },
   });
@@ -110,6 +120,7 @@ const CreateCustomer = (props: Props) => {
                       value={formik.values.firstName}
                       onChange={formik.handleChange}
                     />
+                    {formik.touched.firstName && formik.errors.firstName && <Tooltip content={formik.errors.firstName} direction="bottom" />}
                   </div>
                   <div>
                     <label htmlFor="last-name" className="textstyle-body ">
@@ -122,6 +133,7 @@ const CreateCustomer = (props: Props) => {
                       value={formik.values.lastName}
                       onChange={formik.handleChange}
                     />
+                    {formik.touched.lastName && formik.errors.lastName && <Tooltip content={formik.errors.lastName} direction="bottom" />}
                   </div>
                 </div>
                 <div className="py-4">
@@ -135,6 +147,7 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                   />
+                  {formik.touched.phoneNumber && formik.errors.phoneNumber && <Tooltip content={formik.errors.phoneNumber} direction="right" />}
                 </div>
                 <div className="py-4">
                   <label htmlFor="email" className="textstyle-body ">
@@ -147,6 +160,7 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                   />
+                  {formik.touched.email && formik.errors.email && <Tooltip content={formik.errors.email} direction="right" />}
                 </div>
               </div>
             </div>
@@ -172,6 +186,7 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.businessName}
                     onChange={formik.handleChange}
                   />
+                  {formik.touched.businessName && formik.errors.businessName && <Tooltip content={formik.errors.businessName} direction="right" />}
                 </div>
                 <div className="py-4">
                   <label htmlFor="alt-phone" className="textstyle-body ">
@@ -184,6 +199,7 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.alternatePhoneNumber}
                     onChange={formik.handleChange}
                   />
+                  {formik.touched.alternatePhoneNumber && formik.errors.alternatePhoneNumber && <Tooltip content={formik.errors.alternatePhoneNumber} direction="right" />}
                 </div>
                 <div className="py-4">
                   <div className="textstyle-body ">Notifications</div>
@@ -217,6 +233,7 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.notes}
                     onChange={formik.handleChange}
                   />
+                  {formik.touched.notes && formik.errors.notes && <Tooltip content={formik.errors.notes} direction="right" />}
                 </div>
                 <div className="py-4">
                   <label htmlFor="address" className="textstyle-body ">
@@ -236,6 +253,8 @@ const CreateCustomer = (props: Props) => {
           </form>
         </div>
       </div>
+      {success && <Toast content="Created a customer successfully" />}
+      {isServerError && <Toast content={serverErrorMessage} isShow={isServerError} />}
     </>
   );
 };

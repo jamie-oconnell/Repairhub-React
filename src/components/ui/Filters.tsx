@@ -37,7 +37,7 @@ const Filters: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="relative inline-block text-left">
-      <Button className="ml-2 flex items-center w-28" variant="secondary" onClick={() => setShow(!show)}>
+      <Button className="ml-2 flex items-center" variant="secondary" onClick={() => setShow(!show)}>
         Filters
       </Button>
       {show &&

@@ -366,9 +366,10 @@ export type MeQuery = (
 
 
 export const GetCustomersTableDocument = gql`
-    query GetCustomersTable($pageSize: Int, $sortDirection: SortOrder, $search: String, $after: String, $before: String, $filters: FilterInput) {
+    query GetCustomersTable($firstCount: Int, $lastCount: Int, $sortDirection: SortOrder, $search: String, $after: String, $before: String, $filters: FilterInput) {
   customers(
-    first: $pageSize
+    first: $firstCount
+    last: $lastCount
     sortOrder: $sortDirection
     search: $search
     after: $after
