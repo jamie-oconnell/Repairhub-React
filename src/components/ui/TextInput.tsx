@@ -8,6 +8,7 @@ interface Props {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  isError?: boolean;
 }
 
 const TextInput = ({
@@ -18,6 +19,7 @@ const TextInput = ({
   onChange,
   type,
   className,
+  isError,
 }: Props) => {
   return (
     <div
@@ -38,7 +40,7 @@ const TextInput = ({
         placeholder={placeholder}
         className={`px-4 py-2.5 placeholder-gray-60 border border-gray-20 text-gray-100 relative bg-white outline-none focus:outline-none focus:border-oceanBlue w-full textstyle-body placeholder-opacity-100 caret-oceanBlue transition ${
           icon && "pl-10"
-        }`}
+        }  ${isError && 'border-danger'}`}
       />
     </div>
   );

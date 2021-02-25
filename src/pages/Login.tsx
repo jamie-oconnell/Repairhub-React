@@ -80,6 +80,7 @@ const Login = (props: Props) => {
               onChange={formik.handleChange}
               className="mt-2"
               placeholder="Username"
+              isError={!!formik.errors.username}
             />
             {formik.touched.username && formik.errors.username && <Tooltip content={formik.errors.username} direction="top" />}
           </div>
@@ -94,6 +95,7 @@ const Login = (props: Props) => {
               onChange={formik.handleChange}
               className="mt-2"
               placeholder="Password"
+              isError={!!formik.errors.password}
             />
             {formik.touched.password && formik.errors.password && <Tooltip content={formik.errors.password} direction="top" />}
           </div>

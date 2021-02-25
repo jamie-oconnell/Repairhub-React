@@ -2,6 +2,7 @@ import React from "react"
 import Button from "./Button"
 import TextInput from "./TextInput"
 import { CustomerFilterInput, CreatedAtInput } from "../../generated/graphql";
+import Badge from "./Badge";
 
 type Props = {
   pageName: String;
@@ -15,12 +16,12 @@ const Filters: React.FC<Props> = (props: Props) => {
   const [show, setShow] = React.useState(false);
   const [fromDate, setFromDate] = React.useState<string>("");
   const [toDate, setToDate] = React.useState<string>("");
+  const [statusCount, setStatusCount] = React.useState(0);
   const itemStyle = "flex items-center px-2 py-3 w-52 ring-1 ring-black ring-opacity-5 shadow-sm";
 
   const resetFilters = () => {
     setFromDate("");
     setToDate("");
-    
   }
 
   React.useEffect(() => {
@@ -33,12 +34,13 @@ const Filters: React.FC<Props> = (props: Props) => {
       createdAt,
     };
     setFilters(filtersValue);
+    (fromDate && toDate) ? setStatusCount(2) : (fromDate || toDate) ? setStatusCount(1) : setStatusCount(0);
   }, [fromDate, toDate, setFilters]);
 
   return (
     <div className="relative inline-block text-left">
       <Button className="ml-2 flex items-center" variant="secondary" onClick={() => setShow(!show)}>
-        Filters
+        Filters {statusCount > 0 && <Badge icon={''} content={statusCount} />}
       </Button>
       {show &&
         <div className="origin-top-left absolute left-2 mt-2 w-auto shadow-sm bg-white ring-1 ring-black ring-opacity-5 textstyle-emphasisedbody">

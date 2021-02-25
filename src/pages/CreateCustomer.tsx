@@ -16,15 +16,15 @@ import Tooltip from "../components/ui/Tooltip";
 interface Props {}
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required('First name is required'),
-  lastName: yup.string().required('Last name is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
+  firstName: yup.string(),
+  lastName: yup.string(),
+  email: yup.string(),
   countryCode: yup.string(),
-  phoneNumber: yup.string().required('Phone number is required'),
-  alternatePhoneNumber: yup.string().required('Alt phone number is required'),
-  businessName: yup.string().required('Business name is required'),
+  phoneNumber: yup.string(),
+  alternatePhoneNumber: yup.string(),
+  businessName: yup.string(),
   addressData: yup.object(),
-  notes: yup.string().required('Notes is required')
+  notes: yup.string()
 });
 
 const CreateCustomer = (props: Props) => {
@@ -33,6 +33,11 @@ const CreateCustomer = (props: Props) => {
   const [success, setSuccess] = React.useState(false);
   const [isServerError, setIsServerError] = React.useState(false);
   const [serverErrorMessage, setServerErrorMessage] = React.useState('');
+
+  const validateEmail = (email: string): boolean => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email.toLowerCase());
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -47,6 +52,17 @@ const CreateCustomer = (props: Props) => {
       notes: ""
     },
     validationSchema: validationSchema,
+    validate: (values) => {
+      const errors = {
+        firstName: "",
+        email: ""
+      };
+      if(!values.firstName && !values.lastName && !values.businessName)
+        errors.firstName = "One of first name, last name or business name is required";
+      if(!validateEmail(values.email))
+        errors.email = "Invalid email";
+      return !!errors.firstName || !!errors.email ? errors : undefined;
+    },
     onSubmit: async ({ firstName, lastName, email, phoneNumber, alternatePhoneNumber, businessName, notes }) => {
       setIsServerError(false);
       await createCustomer({
@@ -119,8 +135,9 @@ const CreateCustomer = (props: Props) => {
                       className="mt-2"
                       value={formik.values.firstName}
                       onChange={formik.handleChange}
+                      isError={!!formik.errors.firstName}
                     />
-                    {formik.touched.firstName && formik.errors.firstName && <Tooltip content={formik.errors.firstName} direction="bottom" />}
+                    {formik.errors.firstName && <Tooltip content={formik.errors.firstName} direction="bottom" />}
                   </div>
                   <div>
                     <label htmlFor="last-name" className="textstyle-body ">
@@ -132,8 +149,8 @@ const CreateCustomer = (props: Props) => {
                       placeholder="Last Name"
                       value={formik.values.lastName}
                       onChange={formik.handleChange}
+                      isError={!!formik.errors.firstName}
                     />
-                    {formik.touched.lastName && formik.errors.lastName && <Tooltip content={formik.errors.lastName} direction="bottom" />}
                   </div>
                 </div>
                 <div className="py-4">
@@ -147,7 +164,6 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
                   />
-                  {formik.touched.phoneNumber && formik.errors.phoneNumber && <Tooltip content={formik.errors.phoneNumber} direction="right" />}
                 </div>
                 <div className="py-4">
                   <label htmlFor="email" className="textstyle-body ">
@@ -159,6 +175,7 @@ const CreateCustomer = (props: Props) => {
                     placeholder="Email" 
                     value={formik.values.email}
                     onChange={formik.handleChange}
+                    isError={!!formik.errors.email}
                   />
                   {formik.touched.email && formik.errors.email && <Tooltip content={formik.errors.email} direction="right" />}
                 </div>
@@ -185,8 +202,8 @@ const CreateCustomer = (props: Props) => {
                     placeholder="Business Name"
                     value={formik.values.businessName}
                     onChange={formik.handleChange}
+                    isError={!!formik.errors.firstName}
                   />
-                  {formik.touched.businessName && formik.errors.businessName && <Tooltip content={formik.errors.businessName} direction="right" />}
                 </div>
                 <div className="py-4">
                   <label htmlFor="alt-phone" className="textstyle-body ">
@@ -199,7 +216,6 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.alternatePhoneNumber}
                     onChange={formik.handleChange}
                   />
-                  {formik.touched.alternatePhoneNumber && formik.errors.alternatePhoneNumber && <Tooltip content={formik.errors.alternatePhoneNumber} direction="right" />}
                 </div>
                 <div className="py-4">
                   <div className="textstyle-body ">Notifications</div>
@@ -233,7 +249,6 @@ const CreateCustomer = (props: Props) => {
                     value={formik.values.notes}
                     onChange={formik.handleChange}
                   />
-                  {formik.touched.notes && formik.errors.notes && <Tooltip content={formik.errors.notes} direction="right" />}
                 </div>
                 <div className="py-4">
                   <label htmlFor="address" className="textstyle-body ">
